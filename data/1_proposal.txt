@@ -1,12 +1,6 @@
-Error pattern
-20000A5 Insufficient varnish flow
-Description
-Both the CoatingStar and the CoatingStar Compact are fitted with eccentric disc pumps for this purpose,
-either with 2 C1-pumps or with 2 µ-tt-pumps. This is a high-quality, wearfree pump type that is very 
-durable under normal conditions. If there are malfunctions in the varnish supply system, they are generally
-not caused by the eccentric disc pumps. In most cases, even when there are unusual pump noises or insufficient
-varnish quantitites delivered, the malfunction can be eliminated without a replacement of the eccentric disc
- pumps.
- 
-This document describes the procedures for an analysis and elimination of malfunctions that must be performed
-before an eccentric disc pump is replaced.
+Node[0] - [KnoX_Symptom] - Symptom_ID - value 2000A0D
+Node[0] - [KnoX_Symptom] - Symptom_GER - value "Störung Lüfter Bogenführung BLB A1 bis A4"
+Node[0] - [KnoX_Symptom] - Symptom_ENG - value "?Malfunction: Fan, sheet guide, sheet guide plate A1 through A4"
+Node[1] - [KnoX_Solution] - Cause_GER1 - value "DIPM defekt."
+Node[1] - [KnoX_Solution] - SolutionID_GER1 - value "16425"
+Node[1] - [KnoX_Solution] - Action_GER1 - value "Ausgang DIPM pruefen. Rechtecksignale (PW-Signale) muessen vorhanden sein. Gegebenenfalls DIPM tauschen."
