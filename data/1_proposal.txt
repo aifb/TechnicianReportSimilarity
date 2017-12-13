@@ -1,6 +1,0 @@
-Node[0] - [KnoX_Symptom] - Symptom_ID - value 2000A0D
-Node[0] - [KnoX_Symptom] - Symptom_GER - value "Störung Lüfter Bogenführung BLB A1 bis A4"
-Node[0] - [KnoX_Symptom] - Symptom_ENG - value "?Malfunction: Fan, sheet guide, sheet guide plate A1 through A4"
-Node[1] - [KnoX_Solution] - Cause_GER1 - value "DIPM defekt."
-Node[1] - [KnoX_Solution] - SolutionID_GER1 - value "16425"
-Node[1] - [KnoX_Solution] - Action_GER1 - value "Ausgang DIPM pruefen. Rechtecksignale (PW-Signale) muessen vorhanden sein. Gegebenenfalls DIPM tauschen."
