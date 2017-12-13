@@ -77,7 +77,7 @@ public class App {
 //	    System.setProperty("https.proxyPort", "8080");
 		
 		App app = new App();
-		String report = readInFile("1_report");
+		String report = readInFile("2_report");
 //		String proposal = readInFile("1_proposal");
 //		
 //		System.out.println(report);
@@ -92,23 +92,23 @@ public class App {
 //		System.out.println(response);
 		
 //POST against xDomainNLP Server with sample POST from Marcel. This works.	
-		String targetURL2 = "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
-		String body2 = "{\r\n" + 
-				"\r\n" + 
-				"\"id\":\"123456\",\r\n" + 
-				"\r\n" + 
-				"\"title\":\"test1\",\r\n" + 
-				"\r\n" + 
-				"\"body\":\"I am new to Docker and I have a question regarding possibility to extend docer image after pulling goods from a Printing Press 123456.\",\r\n" + 
-				"\r\n" + 
-				"\"tags\":[\"java\",\"docker\"]\r\n" + 
-				"\r\n" + 
-				"}";
-		String location = executePostNER(targetURL2,body2);
-		System.out.println(location);
-		//Get the annotated response.
-		String annotated = executeGETNER(location);
-		System.out.println(annotated);
+//		String targetURL2 = "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
+//		String body2 = "{\r\n" + 
+//				"\r\n" + 
+//				"\"id\":\"123456\",\r\n" + 
+//				"\r\n" + 
+//				"\"title\":\"test1\",\r\n" + 
+//				"\r\n" + 
+//				"\"body\":\"I am new to Docker and I have a question regarding possibility to extend docer image after pulling goods from a Printing Press 123456.\",\r\n" + 
+//				"\r\n" + 
+//				"\"tags\":[\"java\",\"docker\"]\r\n" + 
+//				"\r\n" + 
+//				"}";
+//		String location = executePostNER(targetURL2,body2);
+//		System.out.println(location);
+//		//Get the annotated response.
+//		String annotated = executeGETNER(location);
+//		System.out.println(annotated);
 		
 //		try {
 //			app.makeRDFCall(location);
@@ -116,21 +116,21 @@ public class App {
 //		catch(Exception e) {
 //			e.printStackTrace();
 //		}
-//		String targetURL2 = "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
-//		String body2 = "{ " + 
-//				"\"id\":\"123456\"," + 
-//				"" + 
-//				"\"title\":\"test1\"," + 
-//				"" + 
-//				"\"body\":\"" + report + "\"," + 
-//				"\"tags\":[\"java\",\"docker\"]" + 
-//				"" + 
-//				"}";
-//		String location = executePostNER(targetURL2,body2);
-//		System.out.println(location);
-//		
-//		//String annotated = executeGETNER(location);
-//		//System.out.println(annotated);
+		String targetURL2 = "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
+		String body2 = "{ " + 
+				"\"id\":\"123456\"," + 
+				"" + 
+				"\"title\":\"test1\"," + 
+				"" + 
+				"\"body\":\"" + report + "\"," + 
+				"\"tags\":[\"java\",\"docker\"]" + 
+				"" + 
+				"}";
+		String location = executePostNER(targetURL2,body2);
+		System.out.println(location);
+		
+		String annotated = executeGETNER(location);
+		System.out.println(annotated);
 //		try {
 //			app.makeRDFCall(location);
 //		}
