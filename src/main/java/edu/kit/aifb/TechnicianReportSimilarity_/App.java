@@ -19,10 +19,14 @@ import java.net.URL;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.LinkedList;
 
 //import javax.ws.rs.ApplicationPath;
@@ -70,117 +74,24 @@ import org.semanticweb.yars.nx.namespace.RDF;
 import org.semanticweb.yars.nx.namespace.RDFS;
 import org.semanticweb.yars.nx.namespace.XSD;
 
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 public class App {
 
 	public static void main(String[] args) {
-		// Recommendation of
-		// https://stackoverflow.com/questions/11648706/spring-resttemplate-client-connection-refused-exception
-		// System.setProperty("http.proxyHost", "yourproxy.server.com");
-		// System.setProperty("http.proxyPort", "8080");
-		// System.setProperty("https.proxyHost", "yourproxy.server.com");
-		// System.setProperty("https.proxyPort", "8080");
 
 		App app = new App();
-		String test = readInFileLineByLine("7_proposal");
+		String test = readInFileLineByLineAndAnnotate("1_proposal");
 		// String proposal = readInFile("7_proposal");
-		//
-		// System.out.println(report);
-		// System.out.println(proposal);
-
-		// POST against Marmotta LDP Server
-		// String targetURL = "http://aifb-ls3-vm1.aifb.kit.edu:8080/marmotta/ldp/";
-		// String body = "@prefix aifb: <http://www.aifb.kit.edu/id/> .\r\n" +
-		// "@prefix foaf: <http://xmlns.com/foaf/0.1/> .\r\n" +
-		// "aifb:Rudi_Studer foaf:name \"RudiStuder2\" .";
-		// String response = executePostMarmotta(targetURL, body);
-		// System.out.println(response);
-
-		// POST against xDomainNLP Server with sample POST from Marcel. This works.
-		// String targetURL2 =
-		// "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
-		// String body2 = "{\r\n" +
-		// "\r\n" +
-		// "\"id\":\"123456\",\r\n" +
-		// "\r\n" +
-		// "\"title\":\"test1\",\r\n" +
-		// "\r\n" +
-		// "\"body\":\"I am new to Docker and I have a question regarding possibility to
-		// extend docer image after pulling goods from a Printing Press 123456.\",\r\n"
-		// +
-		// "\r\n" +
-		// "\"tags\":[\"java\",\"docker\"]\r\n" +
-		// "\r\n" +
-		// "}";
-		// String location = executePostNER(targetURL2,body2);
-		// System.out.println(location);
-		// //Get the annotated response.
-		// String annotated = executeGETNER(location);
-		// System.out.println(annotated);
-
-		// try {
-		// app.makeRDFCall(location);
-		// }
-		// catch(Exception e) {
-		// e.printStackTrace();
-		// }
-		// String targetURL2 =
-		// "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
-		// String body2 = "{ " +
-		// "\"id\":\"123456\"," +
-		// "" +
-		// "\"title\":\"test1\"," +
-		// "" +
-		// "\"body\":\"" + report + "\"," +
-		// "\"tags\":[\"java\",\"docker\"]" +
-		// "" +
-		// "}";
-		// String location = executePostNER(targetURL2,body2);
-		// System.out.println(location);
-		//
-		// String annotated = executeGETNER(location);
-		// System.out.println(annotated);
-		// try {
-		// app.makeRDFCall(location);
-		// }
-		// catch (Exception e) {
-		// e.printStackTrace();
-		// }
-
-		// String targetURL2 =
-		// "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
-		// String body2 = "{ \"id\":\"123456\",\"title\":\"test1\",\"body\":\"1. What
-		// have been the start conditions of the job on-site? start conditions 2. What
-		// has been done to solve the problem? Zum Thema IRIS: hierzu bitte gesonderten
-		// Bericht des Kollegen M. Feuerstein lesen. Zum Thema Anlage wurde -die
-		// Variantenstelle geprüft -der Anleger wurde erneut mit dem Saugkopf abgesteckt
-		// -die Schuppenlänge wurde überprüft -an der Bandantriebswalze wurde der
-		// Durchmesser geprüft. -der Einbau der richtigen Steuerkurve im Saugkopf wurde
-		// geprüft -das Bremskupplungsmodul (BKM) wurde auf Funktion geprüft Alle Teile
-		// waren i.O. bzw. in der Toleranz. -außerdem wurde trotz Folienpaketes das
-		// Saugband von Grau auf Grün getauscht. Mit diesem Tausch funktionierte das
-		// Stapelmanagement und auch der Bogenlauf/Bogenankunftsregelung verlief
-		// erfolgreich! 3. Which parts of the machine have been affected? machine parts
-		// 4. Which machine parts have been exchanged? Saugband 5. Which components have
-		// been adjusted? components adjusted 6. Additional information about software
-		// versions etc. additional info 7. Has the final result been tested? How? Der
-		// Papierlauf incl. Stapelmanagement erfolgte zur Zufriedenheit des Kunden.
-		// Während der Produktionsbegleitung gab es keinerlei Beanstandungen. 8. Summary
-		// of the result Thema Stapelmanagement im Anleger ist behoben. Thema IRIS siehe
-		// Bericht vom Kollegen. 9. Safety relevant issues safety
-		// issues\",\"tags\":[\"java\",\"docker\"]}";
-		// String location = executePostNER(targetURL2,body2);
-		// System.out.println(location);
-		//
-		// String annotated = executeGETNER(location);
-		// System.out.println(annotated);
-
-		// String targetURL3 = "http://aifb-ls3-vm1.aifb.kit.edu:8090/";
-		// String body3 = "'text = Hello World!'";
-		// String response = executePostStanford(targetURL3,body3);
-		// System.out.println(response);
 
 	}
-
+	//Not used right now, copied from another project of sebbader
 	public void makeRDFCall(String targetURL) throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		// Status: hier alle informationen über Java zugreifbar
@@ -233,52 +144,36 @@ public class App {
 		// als rdf über return zurückgegeben
 	}
 
-	public static String readInFile(String filename) {
-		String text = "";
+	
 
-		try {
-			File f = new File("./data/" + filename + ".txt");
 
-			// So many different Readers to be able to specify encoding which is necessary
-			// for mutated vowels(Umlaute).
-			BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
-
-			String readLine = "";
-
-			System.out.println("Reading " + filename + " using Buffered Reader");
-
-			while ((readLine = b.readLine()) != null) {
-				text = text + readLine;
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		}
-		return text;
-	}
-
-	public static String readInFileLineByLine(String filename) {
-
+	public static String readInFileLineByLineAndAnnotate(String filename) {
+		//For each file all Concepts are stored in the List.
+		List<Concept> allConcepts = new ArrayList();
 		try {
 			File f = new File("./data/" + filename + ".txt");
 
 			// So many different Readers to be able to specify encoding which is necessary
 			// for mutated vowels(Umlaute).
 			Writer writer = new BufferedWriter(new OutputStreamWriter(
-		              new FileOutputStream("./data/7_proposal_annotated.txt"), "utf-8"));
+		              new FileOutputStream("./data/"+filename+"_annotated.txt"), "utf-8"));
 			BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 
 			String readLine = "";
 
 			System.out.println("Reading " + filename + " using Buffered Reader");
-
+			
 			while ((readLine = b.readLine()) != null) {
 				if (!readLine.trim().isEmpty()) {
 					// System.out.println(readLine);
+					
+					//Now text is split up according to it's structure. 
+					//Quotation mark indicates that relevant text follows.
 					String[] parts = readLine.split("\"");
 					try {
+						//We are interested in the part behind the quotation mark
 						String message = parts[1];
+						//Strings containing only numbers are not relevant
 						String regex = "[0-9]+";
 						if (message.matches(regex)) {
 							continue;
@@ -286,16 +181,24 @@ public class App {
 						// System.out.println(message);
 
 						message = App.replaceGermanSpecialLetters(message);
-						String targetURL = "http://aifb-ls3-vm1.aifb.kit.edu:9080/nlp/stackoverflow/ner";
+						//Send text to XDomainNLP Server
+						String targetURL = "http://aifb-ls3-vm1.aifb.kit.edu:9085/nlp/stackoverflow/ner";
 						String body = "{ " + "\"body\":\"" + message + "\"" + "," + "\"tags\":[]" + " }";
-
+						//Get the annotated text from the XDomainNLP Server
 						String location = executePostNER(targetURL, body);
 						System.out.println(location);
 						String annotated = executeGETNER(location);
 						System.out.println(annotated);
+						
 
-						writer.write(annotated + "\r");
-					} catch (ArrayIndexOutOfBoundsException e) {
+						//writer.write(annotated + "\r");
+						
+						allConcepts.addAll(parseRelevantPartsString(annotated));
+
+						
+					}
+					//In case a line does not contain a quotation mark the parts array consists of one element
+					catch (ArrayIndexOutOfBoundsException e) {
 						continue;
 					}
 				}
@@ -304,7 +207,51 @@ public class App {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Iterator iter = allConcepts.iterator();
+		System.out.println("Iterating through Concepts.");
+		while (iter.hasNext())
+		{
+			Concept c = (Concept) iter.next();
+			System.out.println(c.toString());
+		}
 		return "";
+	}
+	
+
+	public static List parseRelevantPartsString(String annotated)
+	{
+		List<Concept> concepts = new ArrayList();
+		
+		JsonElement jelement = new JsonParser().parse(annotated);
+		JsonObject jsonObject = jelement.getAsJsonObject();
+		JsonArray graphArray = jsonObject.get("@graph").getAsJsonArray();
+		System.out.println(graphArray);
+		Iterator<JsonElement> iter = graphArray.iterator();
+		while (iter.hasNext())
+		{
+			//System.out.println(iter.next());
+			JsonObject jo = iter.next().getAsJsonObject();
+
+			
+			try
+			{
+				JsonObject taIdentRef = jo.get("itsrdf:taIdentRef").getAsJsonObject();
+				//System.out.println(taIdentRef);
+				String anchorOf = jo.get("nif:anchorOf").getAsString();
+				System.out.println(anchorOf);
+				String url = taIdentRef.get("@id").getAsString();
+				System.out.println(url);
+
+				
+				Concept c = new Concept(url,anchorOf);
+				concepts.add(c);
+			}
+			catch(NullPointerException e)
+			{
+				//e.printStackTrace();
+			}
+		}
+		return concepts;
 	}
 
 	public static String replaceGermanSpecialLetters(String message) {
@@ -318,58 +265,12 @@ public class App {
 
 	}
 
-	// TBD: Wie iterierte ich über alle Reports und Proposals zum Einlesen?
-	// TBD: Wie POST absetzen?
-	// TBD: Wie bekomme ich Response, wie sieht die aus und was mache ich dann mit
-	// der?
-	// TBD: Text must be posted to Stanford CoreNLP
-	public static String executePostMarmotta(String targetURL, String body) {
-		HttpURLConnection connection = null;
 
-		try {
-			// Create connection
-			URL url = new URL(targetURL);
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "text/turtle");
-			connection.setRequestProperty("SLUG", "RudiStuder2");
-
-			// connection.setRequestProperty("Content-Length",
-			// Integer.toString(urlParameters.getBytes().length));
-			// connection.setRequestProperty("Content-Language", "en-US");
-			//
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
-
-			// Send request
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(body);
-			wr.close();
-
-			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-			String line;
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
-			}
-			rd.close();
-			return response.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-	}
+	
 
 	public static String executePostNER(String targetURL, String body) {
 		HttpURLConnection connection = null;
-		System.out.println(body);
+		System.out.println("POST Body: " + body);
 		try {
 			// Create connection
 			URL url = new URL(targetURL);
@@ -377,9 +278,6 @@ public class App {
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Accept", "application/json");
 			connection.setRequestProperty("Content-Type", "application/json");
-			// Recommendation from
-			// https://stackoverflow.com/questions/11648706/spring-resttemplate-client-connection-refused-exception
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
 			connection.setUseCaches(false);
 			connection.setDoOutput(true);
@@ -395,6 +293,7 @@ public class App {
 			System.out.println(message);
 			if (status == HttpURLConnection.HTTP_CREATED) {
 				String location = connection.getHeaderField("Location");
+				//Location is needed to perform the GET afterwards
 				return location;
 
 			} else
