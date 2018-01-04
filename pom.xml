@@ -181,7 +181,17 @@
     <version>1.0.0</version>
     <scope>system</scope> 
     <systemPath>${basedir}/lib/ws4j.jar</systemPath>
-  </dependency>		
+  </dependency>	
+  
+  <!-- https://mvnrepository.com/artifact/org.apache.jena/apache-jena-libs -->
+<dependency>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>apache-jena-libs</artifactId>
+    <version>3.6.0</version>
+    <type>pom</type>
+</dependency>
+  
+  	
   </dependencies>
 
 </project>
