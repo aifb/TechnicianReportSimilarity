@@ -14,6 +14,7 @@ import edu.cmu.lti.ws4j.impl.Resnik;
 import edu.cmu.lti.ws4j.impl.WuPalmer;
 import edu.cmu.lti.ws4j.util.WS4JConfiguration;
 
+//Demo class from https://github.com/Sciss/ws4j
 public class SimilarityCalculationDemo {
 	
 	private static ILexicalDatabase db = new NictWordNet();
@@ -22,7 +23,7 @@ public class SimilarityCalculationDemo {
 			new Resnik(db), new JiangConrath(db), new Lin(db), new Path(db)
 			};
 	
-	private static void run( String word1, String word2 ) {
+	static void run( String word1, String word2 ) {
 		WS4JConfiguration.getInstance().setMFS(true);
 		for ( RelatednessCalculator rc : rcs ) {
 			double s = rc.calcRelatednessOfWords(word1, word2);

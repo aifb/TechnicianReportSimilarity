@@ -12,6 +12,7 @@ import edu.cmu.lti.ws4j.impl.Path;
 import edu.cmu.lti.ws4j.impl.Resnik;
 import edu.cmu.lti.ws4j.impl.WuPalmer;
 
+//Source: https://stackoverflow.com/questions/36300485/how-to-resolve-the-difference-between-the-values-attained-in-the-web-api-and-the
 public class SentenceMatcherSimilarityMatrix
 {
  private static ILexicalDatabase db = new NictWordNet();

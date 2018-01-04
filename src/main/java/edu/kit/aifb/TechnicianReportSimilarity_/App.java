@@ -87,7 +87,12 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		String test = readInFileLineByLineAndAnnotate("1_proposal");
+		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("7_proposal");
+		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
+		
+//		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
+//		SimilarityCalculator.run("dog","pet");
+		
 		// String proposal = readInFile("7_proposal");
 
 	}
@@ -144,10 +149,9 @@ public class App {
 		// als rdf über return zurückgegeben
 	}
 
-	
 
-
-	public static String readInFileLineByLineAndAnnotate(String filename) {
+	//Proposal and Report have own methods since proposal has specific structure.
+	public static List<Concept> readInProposalLineByLineAndAnnotate(String filename) {
 		//For each file all Concepts are stored in the List.
 		List<Concept> allConcepts = new ArrayList();
 		try {
@@ -208,15 +212,66 @@ public class App {
 			e.printStackTrace();
 		}
 		Iterator iter = allConcepts.iterator();
-		System.out.println("Iterating through Concepts.");
+		System.out.println("Iterating through proposal Concepts.");
 		while (iter.hasNext())
 		{
 			Concept c = (Concept) iter.next();
 			System.out.println(c.toString());
 		}
-		return "";
+		return allConcepts;
 	}
-	
+
+	public static List<Concept> readInReportLineByLineAndAnnotate(String filename) {
+		//For each file all Concepts are stored in the List.
+		List<Concept> allConcepts = new ArrayList();
+		try {
+			File f = new File("./data/" + filename + ".txt");
+
+			// So many different Readers to be able to specify encoding which is necessary
+			// for mutated vowels(Umlaute).
+			Writer writer = new BufferedWriter(new OutputStreamWriter(
+		              new FileOutputStream("./data/"+filename+"_annotated.txt"), "utf-8"));
+			BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+
+			String readLine = "";
+
+			System.out.println("Reading " + filename + " using Buffered Reader");
+			
+			while ((readLine = b.readLine()) != null) {
+				if (!readLine.trim().isEmpty()) {
+					String message = readLine;
+
+						message = App.replaceGermanSpecialLetters(message);
+						//Send text to XDomainNLP Server
+						String targetURL = "http://aifb-ls3-vm1.aifb.kit.edu:9085/nlp/stackoverflow/ner";
+						String body = "{ " + "\"body\":\"" + message + "\"" + "," + "\"tags\":[]" + " }";
+						//Get the annotated text from the XDomainNLP Server
+						String location = executePostNER(targetURL, body);
+						System.out.println(location);
+						String annotated = executeGETNER(location);
+						System.out.println(annotated);
+						
+
+						//writer.write(annotated + "\r");
+						
+						allConcepts.addAll(parseRelevantPartsString(annotated));
+
+				}
+			}			
+			
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Iterator iter = allConcepts.iterator();
+		System.out.println("Iterating through Report Concepts.");
+		while (iter.hasNext())
+		{
+			Concept c = (Concept) iter.next();
+			System.out.println(c.toString());
+		}
+		return allConcepts;
+	}
 
 	public static List parseRelevantPartsString(String annotated)
 	{
