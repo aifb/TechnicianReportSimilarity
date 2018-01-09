@@ -89,7 +89,6 @@ public class App {
 		App app = new App();
 		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("7_proposal");
 		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
-		
 //		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
 //		SimilarityCalculator.run("dog","pet");
 		
@@ -379,45 +378,6 @@ public class App {
 			}
 			rd.close();
 			return result.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-	}
-
-	public static String executePostStanford(String targetURL, String body) {
-		HttpURLConnection connection = null;
-		try {
-			// Create connection
-			URL url = new URL(targetURL);
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Accept", "XML");
-			connection.setRequestProperty("Content-Type", "text");
-
-			connection.setUseCaches(false);
-			connection.setDoOutput(true);
-
-			// Send request
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(body);
-			wr.close();
-
-			// Get Response
-			InputStream is = connection.getInputStream();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-			StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-			String line;
-			while ((line = rd.readLine()) != null) {
-				response.append(line);
-				response.append('\r');
-			}
-			rd.close();
-			return response.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
