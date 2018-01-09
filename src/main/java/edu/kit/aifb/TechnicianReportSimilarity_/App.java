@@ -87,8 +87,8 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("7_proposal");
-		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
+		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("2_proposal");
+		//List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
 //		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
 //		SimilarityCalculator.run("dog","pet");
 		
