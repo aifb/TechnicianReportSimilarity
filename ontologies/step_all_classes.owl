@@ -5367,6 +5367,8 @@ Note that, given the DUL modelling of Qualities, a sensor defined with &apos;obs
 
     <owl:Class rdf:about="http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder">
         <rdfs:subClassOf rdf:resource="http://people.aifb.kit.edu/mu2771/step#WorkOrder"/>
+        <!--Test of sameAs Relation -->
+        <owl:sameAs rdf:resource="http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder"/>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://people.aifb.kit.edu/mu2771/step#wasNewWorkOrder"/>
