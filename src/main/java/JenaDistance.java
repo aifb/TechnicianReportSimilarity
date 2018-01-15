@@ -30,7 +30,7 @@ public class JenaDistance {
         long startTime = System.currentTimeMillis();
         
         // this file needs to be created by doing "Save As.." and "RDF/XML" for a 'normal' OWL file. Otherwise we get Jena parse errors
-        String inputFileName = "./ontologies/step_all_classes.owl";
+        String inputFileName = "./ontologies/step_classes_murks.owl";
         //Namespace
         String ns = "http://people.aifb.kit.edu/mu2771/step";
 
@@ -40,8 +40,13 @@ public class JenaDistance {
         
         System.out.format("Ontology load time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);        
         
-        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder";
-        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder";
+        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#ink_train";
+        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#inking_station";
+        
+//        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder";
+//        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder";
+        
+        
         OntClass fromSubClass = model.getOntClass(fromSubClassURI);
         OntClass toSuperClass = model.getOntClass(toSuperClassURI);
         //OntClass fromSubClass = model.getOntClass("http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder");
@@ -65,8 +70,9 @@ public class JenaDistance {
         {
             Collection <Property> predicates = new ArrayList <Property>();
             PropertyImpl subClassOf = new PropertyImpl("http://www.w3.org/2000/01/rdf-schema#subClassOf");
-            PropertyImpl symmetric = new PropertyImpl("http://people.aifb.kit.edu/mu2771/step/symmetricProperty");
             predicates.add(subClassOf);
+            PropertyImpl subClassOfInverted = new PropertyImpl("http://www.example.org/subClassOfInverted");
+            predicates.add(subClassOfInverted);
             PredicatesFilter pf = new PredicatesFilter(predicates);
             Path path = OntTools.findShortestPath(model, fromSubClass, toSuperClass, pf);
 
