@@ -87,13 +87,24 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("2_proposal");
-		//List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
+		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("1_proposal");
+		List<Concept> ProposalConceptsWoExampleOrg = app.removeExampleEntities(ProposalConcepts);
+//		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
 //		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
 //		SimilarityCalculator.run("dog","pet");
 		
 		// String proposal = readInFile("7_proposal");
 
+	}
+	
+	public List<Concept> removeExampleEntities(List<Concept> list)
+	{
+		Iterator<Concept> iter = list.iterator();
+		while (iter.hasNext()) {
+		  Concept c = iter.next();
+		  if (c.getUrl().startsWith("http://example.org/")) iter.remove();
+		}
+		return list;
 	}
 	//Not used right now, copied from another project of sebbader
 	public void makeRDFCall(String targetURL) throws NoSuchMethodException, SecurityException, IllegalAccessException,
