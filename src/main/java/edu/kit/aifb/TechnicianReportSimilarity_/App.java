@@ -19,6 +19,7 @@ import java.net.URL;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -87,9 +88,13 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("1_proposal");
+		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("1_proposalFake");
 		List<Concept> ProposalConceptsWoExampleOrg = app.removeExampleEntities(ProposalConcepts);
-//		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("7_FakeReport");
+		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("1_FakeReport");
+		List<Concept> ReportConceptsWoExampleOrg = app.removeExampleEntities(ReportConcepts);
+		int[][] distances = app.calculateJenaDistances(ReportConceptsWoExampleOrg,ProposalConceptsWoExampleOrg);
+		System.out.println(Arrays.deepToString(distances));
+		
 //		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
 //		SimilarityCalculator.run("dog","pet");
 		
@@ -97,6 +102,38 @@ public class App {
 
 	}
 	
+	public int[][] calculateJenaDistances(List<Concept> reportConcepts,List<Concept> proposalConcepts)
+	{
+		JenaDistance jd = new JenaDistance();
+		int[][] distances = new int[reportConcepts.size()][proposalConcepts.size()];
+		Iterator<Concept> reportIterator =reportConcepts.iterator();
+		int reportCounter = 0;
+		while (reportIterator.hasNext()){
+			Concept reportConcept = reportIterator.next();
+			String reportURL = reportConcept.getUrl();
+			reportURL = reportURL.replace("step/", "step#");
+			
+			Iterator<Concept> proposalIterator = proposalConcepts.iterator();
+			int proposalCounter =0;
+			while(proposalIterator.hasNext())
+			{
+				Concept proposalConcept = proposalIterator.next();
+				String proposalURL = proposalConcept.getUrl();
+				proposalURL = proposalURL.replace("step/", "step#");
+				distances[reportCounter][proposalCounter] = jd.FindJenaDistance(reportURL, proposalURL);
+				//System.out.println("Now comparing " + reportURL + " and " + proposalURL);
+				proposalCounter++;
+			}
+			reportCounter++;
+			
+		}
+			
+		
+		
+		return distances;
+		
+		
+	}
 	public List<Concept> removeExampleEntities(List<Concept> list)
 	{
 		Iterator<Concept> iter = list.iterator();

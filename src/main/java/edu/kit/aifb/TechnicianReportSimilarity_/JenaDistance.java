@@ -1,3 +1,4 @@
+package edu.kit.aifb.TechnicianReportSimilarity_;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,10 +21,12 @@ import org.apache.jena.util.iterator.Filter;
 public class JenaDistance {
 
 	public static void main(String[] args) {
-		FindJenaDistance();
+        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#ink_train";
+        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#inking_station";
+		FindJenaDistance(fromSubClassURI, toSuperClassURI);
 
 	}
-	public static void FindJenaDistance() {
+	public static int FindJenaDistance(String fromSubClassURI, String toSuperClassURI) {
 
         // Jena implementation 
 
@@ -40,8 +43,7 @@ public class JenaDistance {
         
         System.out.format("Ontology load time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);        
         
-        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#ink_train";
-        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#inking_station";
+
         
 //        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder";
 //        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder";
@@ -65,6 +67,7 @@ public class JenaDistance {
         if (sameAsPath != null)
         {
         	System.out.println(fromSubClass +" and " + toSuperClass + " are connected by a sameAs relation.");
+        	return 0;
         }
         else
         {
@@ -79,6 +82,7 @@ public class JenaDistance {
             
             if (fromSubClassURI.equals(toSuperClassURI)){
             	System.out.println("Same node");
+            	return 0;
             }
             else if (path != null){
                 int superClasses = 0;
@@ -90,9 +94,10 @@ public class JenaDistance {
                     }
                 }
                 System.out.println("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
+                return superClasses;
             }else {
                 System.out.println("No path from " + fromSubClass + " to " + toSuperClass);
-            
+                return -1;
         }
         
         
@@ -113,7 +118,7 @@ public class JenaDistance {
 //            System.out.println("No path from " + fromSubClass + " to " + toSuperClass);
 //        }   
 
-        System.out.format("\nProcessing time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);
+        //System.out.format("\nProcessing time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);
     }
 	}
 
