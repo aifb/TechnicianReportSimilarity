@@ -19,32 +19,33 @@ import org.apache.jena.util.iterator.Filter;
 
 //Source: https://thusithamabotuwana.wordpress.com/2012/01/20/determining-shortest-distance-between-ontology-concepts-using-jena-onttools/
 public class JenaDistance {
+	public static OntModel model;
+	
+	public JenaDistance(String inputFileName, String namespace) {
+        long startTime = System.currentTimeMillis();
+        
+        // the inputFileName file needs to be created by doing "Save As.." and "RDF/XML" for a 'normal' OWL file. Otherwise we get Jena parse errors
+        if (model == null)
+        {
+            this.model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+            InputStream in = FileManager.get().open(inputFileName);
+            model.read(in, ""); 
+            System.out.format("Ontology load time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);
+        	
+        } 
+}
+	
 
 	public static void main(String[] args) {
+		JenaDistance jd2 = new JenaDistance("./step_classes_murks.owl","http://people.aifb.kit.edu/mu2771/step");
         String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#ink_train";
         String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#inking_station";
-		FindJenaDistance(fromSubClassURI, toSuperClassURI);
+		jd2.FindJenaDistance(fromSubClassURI, toSuperClassURI);
 
 	}
 	public static int FindJenaDistance(String fromSubClassURI, String toSuperClassURI) {
 
-        // Jena implementation 
-
-        long startTime = System.currentTimeMillis();
-        
-        // this file needs to be created by doing "Save As.." and "RDF/XML" for a 'normal' OWL file. Otherwise we get Jena parse errors
-        String inputFileName = "./ontologies/step_classes_murks.owl";
-        //Namespace
-        String ns = "http://people.aifb.kit.edu/mu2771/step";
-
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
-        InputStream in = FileManager.get().open(inputFileName);
-        model.read(in, "");  
-        
-        System.out.format("Ontology load time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);        
-        
-
-        
+        // Jena implementation       
 //        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder";
 //        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder";
         
@@ -69,6 +70,10 @@ public class JenaDistance {
         	System.out.println(fromSubClass +" and " + toSuperClass + " are connected by a sameAs relation.");
         	return 0;
         }
+        else if(fromSubClassURI.equals(toSuperClassURI)){
+        	System.out.println("Same node");
+        	return 0;
+        	}
         else
         {
             Collection <Property> predicates = new ArrayList <Property>();
@@ -78,20 +83,12 @@ public class JenaDistance {
             predicates.add(subClassOfInverted);
             PredicatesFilter pf = new PredicatesFilter(predicates);
             Path path = OntTools.findShortestPath(model, fromSubClass, toSuperClass, pf);
-
             
-            if (fromSubClassURI.equals(toSuperClassURI)){
-            	System.out.println("Same node");
-            	return 0;
-            }
-            else if (path != null){
+            if (path != null){
                 int superClasses = 0;
                 for (Statement s: path) {
-                    if (s.getObject().toString().startsWith(ns)) {
-                        // filter out OWL Classes
                         superClasses++;
                         System.out.println(s.getObject());
-                    }
                 }
                 System.out.println("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
                 return superClasses;
@@ -99,26 +96,6 @@ public class JenaDistance {
                 System.out.println("No path from " + fromSubClass + " to " + toSuperClass);
                 return -1;
         }
-        
-        
-
-//        if (path != null){
-//            int superClasses = 0;
-//            for (Statement s: path) {
-//                if (s.getObject().toString().startsWith(ns)) {
-//                    // filter out OWL Classes
-//                    superClasses++;
-//                    System.out.println(s.getObject());
-//                }
-//            }
-//            System.out.println("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
-//        }else if (fromSubClass == toSuperClass){
-//            System.out.println("Same node");
-//        }else {
-//            System.out.println("No path from " + fromSubClass + " to " + toSuperClass);
-//        }   
-
-        //System.out.format("\nProcessing time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);
     }
 	}
 

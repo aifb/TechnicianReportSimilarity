@@ -88,11 +88,12 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		List<Concept> ProposalConcepts = readInProposalLineByLineAndAnnotate("1_proposalFake");
-		List<Concept> ProposalConceptsWoExampleOrg = app.removeExampleEntities(ProposalConcepts);
-		List<Concept> ReportConcepts = readInReportLineByLineAndAnnotate("1_FakeReport");
-		List<Concept> ReportConceptsWoExampleOrg = app.removeExampleEntities(ReportConcepts);
-		int[][] distances = app.calculateJenaDistances(ReportConceptsWoExampleOrg,ProposalConceptsWoExampleOrg);
+		//TBD: Start variables with lowercase letters
+		List<Concept> proposalConcepts = readInProposalLineByLineAndAnnotate("1_proposalFake");
+		List<Concept> proposalConceptsWoExampleOrg = app.removeExampleEntities(proposalConcepts);
+		List<Concept> reportConcepts = readInReportLineByLineAndAnnotate("1_FakeReport");
+		List<Concept> reportConceptsWoExampleOrg = app.removeExampleEntities(reportConcepts);
+		int[][] distances = app.calculateJenaDistances(reportConceptsWoExampleOrg,proposalConceptsWoExampleOrg);
 		System.out.println(Arrays.deepToString(distances));
 		
 //		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
@@ -104,7 +105,7 @@ public class App {
 	
 	public int[][] calculateJenaDistances(List<Concept> reportConcepts,List<Concept> proposalConcepts)
 	{
-		JenaDistance jd = new JenaDistance();
+		JenaDistance jd = new JenaDistance("./ontologies/step_classes_murks.owl","http://people.aifb.kit.edu/mu2771/step");
 		int[][] distances = new int[reportConcepts.size()][proposalConcepts.size()];
 		Iterator<Concept> reportIterator =reportConcepts.iterator();
 		int reportCounter = 0;
@@ -125,11 +126,8 @@ public class App {
 				proposalCounter++;
 			}
 			reportCounter++;
-			
+	
 		}
-			
-		
-		
 		return distances;
 		
 		
