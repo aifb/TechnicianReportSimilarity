@@ -1,4 +1,4 @@
-package edu.kit.aifb.TechnicianReportSimilarity_;
+package edu.kit.aifb.TechnicianReportSimilarity;
 
 
 import edu.cmu.lti.lexical_db.ILexicalDatabase;

@@ -1,4 +1,4 @@
-package edu.kit.aifb.TechnicianReportSimilarity_;
+package edu.kit.aifb.TechnicianReportSimilarity;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

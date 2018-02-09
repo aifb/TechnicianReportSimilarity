@@ -1,4 +1,4 @@
-package edu.kit.aifb.TechnicianReportSimilarity_;
+package edu.kit.aifb.TechnicianReportSimilarity.vocabs;
 
 import org.semanticweb.yars.nx.Node;
 import org.semanticweb.yars.nx.Resource;

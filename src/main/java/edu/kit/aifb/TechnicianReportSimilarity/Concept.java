@@ -1,4 +1,4 @@
-package edu.kit.aifb.TechnicianReportSimilarity_;
+package edu.kit.aifb.TechnicianReportSimilarity;
 
 public class Concept {
 	private String url;
