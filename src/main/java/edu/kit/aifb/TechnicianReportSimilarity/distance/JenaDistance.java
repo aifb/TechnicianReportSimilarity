@@ -17,15 +17,17 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileManager;
 import org.apache.jena.util.iterator.Filter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import edu.kit.aifb.TechnicianReportSimilarity.Concept;
 
 //Source: https://thusithamabotuwana.wordpress.com/2012/01/20/determining-shortest-distance-between-ontology-concepts-using-jena-onttools/
 public class JenaDistance {
-	
+
+	private final Logger logger = LoggerFactory.getLogger(JenaDistance.class);
 	
 	public OntModel model;
-
 
 	
 	public JenaDistance() {
@@ -42,7 +44,7 @@ public class JenaDistance {
 			this.model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 			InputStream in = FileManager.get().open(inputFileName);
 			model.read(in, ""); 
-			System.out.format("Ontology load time: (%7.2f sec)%n%n", (System.currentTimeMillis() - startTime) / 1000.0);
+			logger.info("Ontology load time: ({} sec)", (System.currentTimeMillis() - startTime) / 1000.0);
 
 		} 
 	}
@@ -70,7 +72,7 @@ public class JenaDistance {
 				String proposalURL = proposalConcept.getUrl();
 				proposalURL = proposalURL.replace("step/", "step#");
 				distances[reportCounter][proposalCounter] = jd.FindJenaDistance(reportURL, proposalURL);
-				//System.out.println("Now comparing " + reportURL + " and " + proposalURL);
+				//logger.info("Now comparing " + reportURL + " and " + proposalURL);
 				proposalCounter++;
 			}
 			reportCounter++;
@@ -107,11 +109,11 @@ public class JenaDistance {
 		Path sameAsPath = OntTools.findShortestPath(model, fromSubClass, toSuperClass, sameAsPf);
 		if (sameAsPath != null)
 		{
-			System.out.println(fromSubClass +" and " + toSuperClass + " are connected by a sameAs relation.");
+			logger.info(fromSubClass +" and " + toSuperClass + " are connected by a sameAs relation.");
 			return 0;
 		}
 		else if(fromSubClassURI.equals(toSuperClassURI)){
-			System.out.println("Same node");
+			logger.info("Same node");
 			return 0;
 		}
 		else
@@ -128,32 +130,16 @@ public class JenaDistance {
 				int superClasses = 0;
 				for (Statement s: path) {
 					superClasses++;
-					System.out.println(s.getObject());
+					logger.info(s.getObject().toString());
 				}
-				System.out.println("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
+				logger.info("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
 				return superClasses;
 			}else {
-				System.out.println("No path from " + fromSubClass + " to " + toSuperClass);
+				logger.info("No path from " + fromSubClass + " to " + toSuperClass);
 				return -1;
 			}
 		}
 	}
-
-
-
-
-	public static void main(String[] args) {
-		
-		JenaDistance jd2 = new JenaDistance("./step_classes_murks.owl","http://people.aifb.kit.edu/mu2771/step");
-		
-		String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#ink_train";
-		String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#inking_station";
-		
-		System.out.println("Jena Distance between 'ink_train' and 'inking_station':");
-		System.out.println(jd2.FindJenaDistance(fromSubClassURI, toSuperClassURI));
-
-	}
-
 
 
 }

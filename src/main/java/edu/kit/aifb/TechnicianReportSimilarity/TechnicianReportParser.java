@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,6 +27,7 @@ public class TechnicianReportParser {
 	
 	
 	private XDomainNlpClient nlpService;
+	private final Logger logger = LoggerFactory.getLogger(TechnicianReportParser.class);
 	
 	
 	public TechnicianReportParser() {
@@ -47,7 +51,7 @@ public class TechnicianReportParser {
 
 			String readLine = "";
 
-			System.out.println("Reading " + filename + " using Buffered Reader");
+			logger.info("Reading " + filename + " using Buffered Reader");
 
 			while ((readLine = b.readLine()) != null) {
 				if (!readLine.trim().isEmpty()) {
@@ -72,9 +76,9 @@ public class TechnicianReportParser {
 						String body = "{ " + "\"body\":\"" + message + "\"" + "," + "\"tags\":[]" + " }";
 						//Get the annotated text from the XDomainNLP Server
 						String location = nlpService.executePostNer(targetURL, body);
-						System.out.println(location);
+						logger.info(location);
 						String annotated = nlpService.executeGetNer(location);
-						System.out.println(annotated);
+						logger.info(annotated);
 
 
 						//writer.write(annotated + "\r");
@@ -96,11 +100,11 @@ public class TechnicianReportParser {
 			e.printStackTrace();
 		}
 		Iterator<Concept> iter = allConcepts.iterator();
-		System.out.println("Iterating through proposal Concepts.");
+		logger.info("Iterating through proposal Concepts.");
 		while (iter.hasNext())
 		{
 			Concept c = (Concept) iter.next();
-			System.out.println(c.toString());
+			logger.info(c.toString());
 		}
 		return allConcepts;
 	}
@@ -122,7 +126,7 @@ public class TechnicianReportParser {
 
 			String readLine = "";
 
-			System.out.println("Reading " + filename + " using Buffered Reader");
+			logger.info("Reading " + filename + " using Buffered Reader");
 
 			while ((readLine = b.readLine()) != null) {
 				if (!readLine.trim().isEmpty()) {
@@ -134,9 +138,9 @@ public class TechnicianReportParser {
 					String body = "{ " + "\"body\":\"" + message + "\"" + "," + "\"tags\":[]" + " }";
 					//Get the annotated text from the XDomainNLP Server
 					String location = nlpService.executePostNer(targetURL, body);
-					System.out.println(location);
+					logger.info(location);
 					String annotated = nlpService.executeGetNer(location);
-					System.out.println(annotated);
+					logger.info(annotated);
 
 
 					//writer.write(annotated + "\r");
@@ -150,13 +154,14 @@ public class TechnicianReportParser {
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error("Error reading reports: ", e);
 		}
 		Iterator<Concept> iter = allConcepts.iterator();
 		System.out.println("Iterating through Report Concepts.");
 		while (iter.hasNext())
 		{
 			Concept c = (Concept) iter.next();
-			System.out.println(c.toString());
+			logger.info(c.toString());
 		}
 		return allConcepts;
 	}
@@ -172,7 +177,7 @@ public class TechnicianReportParser {
 		JsonElement jelement = new JsonParser().parse(annotated);
 		JsonObject jsonObject = jelement.getAsJsonObject();
 		JsonArray graphArray = jsonObject.get("@graph").getAsJsonArray();
-		System.out.println(graphArray);
+		logger.info(graphArray.toString());
 		Iterator<JsonElement> iter = graphArray.iterator();
 		while (iter.hasNext())
 		{
@@ -185,9 +190,9 @@ public class TechnicianReportParser {
 				JsonObject taIdentRef = jo.get("itsrdf:taIdentRef").getAsJsonObject();
 				//System.out.println(taIdentRef);
 				String anchorOf = jo.get("nif:anchorOf").getAsString();
-				System.out.println(anchorOf);
+				logger.info(anchorOf);
 				String url = taIdentRef.get("@id").getAsString();
-				System.out.println(url);
+				logger.info(url);
 
 
 				Concept c = new Concept(url,anchorOf);

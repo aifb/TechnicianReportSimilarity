@@ -1,5 +1,8 @@
 package edu.kit.aifb.TechnicianReportSimilarity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.cmu.lti.lexical_db.ILexicalDatabase;
 import edu.cmu.lti.lexical_db.NictWordNet;
 import edu.cmu.lti.ws4j.RelatednessCalculator;
@@ -13,134 +16,132 @@ import edu.cmu.lti.ws4j.impl.Resnik;
 import edu.cmu.lti.ws4j.impl.WuPalmer;
 
 //Source: https://stackoverflow.com/questions/36300485/how-to-resolve-the-difference-between-the-values-attained-in-the-web-api-and-the
-public class SentenceMatcherSimilarityMatrix
-{
- private static ILexicalDatabase db = new NictWordNet();
- public double[][] getSimilarityMatrix( String[] words1, String[] words2, RelatednessCalculator rc )
-{
-    double[][] result = new double[words1.length][words2.length];
-    for ( int i=0; i<words1.length; i++ ){
-        for ( int j=0; j<words2.length; j++ ) {
-            double score = rc.calcRelatednessOfWords(words1[i], words2[j]);
-            result[i][j] = score;
-          }
-        }
-    return result;
-  }
-  private void compute (String[] words1, String[] words2)
-  {
-    System.out.println("WuPalmer");
-    RelatednessCalculator rc1 = new WuPalmer(db);
-       {
-        double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s1[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+/**
+ * 
+ * @author sba
+ *
+ */
+public class SentenceMatcherSimilarityMatrix {
+	
+	private ILexicalDatabase db = new NictWordNet();
+	
+	private final Logger logger = LoggerFactory.getLogger(SentenceMatcherSimilarityMatrix.class);
+	
+	
+	public double[][] getSimilarityMatrix( String[] words1, String[] words2, RelatednessCalculator rc )	{
+		double[][] result = new double[words1.length][words2.length];
+		for ( int i=0; i<words1.length; i++ ){
+			for ( int j=0; j<words2.length; j++ ) {
+				double score = rc.calcRelatednessOfWords(words1[i], words2[j]);
+				result[i][j] = score;
+			}
+		}
+		return result;
+	}
+	
+	
+	
+	private void compute (String[] words1, String[] words2) {
+		logger.info("WuPalmer");
+		RelatednessCalculator rc1 = new WuPalmer(db);
+		{
+			double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("Resnik");
-    RelatednessCalculator rc2 = new Resnik(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc2);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("Resnik");
+		RelatednessCalculator rc2 = new Resnik(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc2);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("JiangConrath");
-    RelatednessCalculator rc3 = new JiangConrath(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc3);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("JiangConrath");
+		RelatednessCalculator rc3 = new JiangConrath(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc3);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("Lin");
-    RelatednessCalculator rc4 = new Lin(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc4);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("Lin");
+		RelatednessCalculator rc4 = new Lin(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc4);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("LeacockChodrow");
-    RelatednessCalculator rc5 = new LeacockChodorow(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc5);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("LeacockChodrow");
+		RelatednessCalculator rc5 = new LeacockChodorow(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc5);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("Path");
-    RelatednessCalculator rc6 = new Path(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc6);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("Path");
+		RelatednessCalculator rc6 = new Path(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc6);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("Lesk");
-    RelatednessCalculator rc7 = new Lesk(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc7);
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-        }}
-    System.out.println();
-    System.out.println();
+		logger.info("Lesk");
+		RelatednessCalculator rc7 = new Lesk(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc7);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+		logger.info("");
 
-    System.out.println("HirstStOnge");
-    RelatednessCalculator rc8 = new HirstStOnge(db);
-    {
-        double[][] s2 = getSimilarityMatrix(words1, words2,rc8);
+		logger.info("HirstStOnge");
+		RelatednessCalculator rc8 = new HirstStOnge(db);
+		{
+			double[][] s2 = getSimilarityMatrix(words1, words2,rc8);
 
-        for(int i=0; i<words1.length; i++){
-            for(int j=0; j< words2.length; j++){
-                System.out.print(s2[i][j] +"\t");
-            } 
-            System.out.println();
-           }}
-          }
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s2[i][j] +"\t");
+				} 
+			}}
+	}
 
-public static void main(String[] args) 
-{
-    String sent1 = "The boy is playing with a dog.";
-    String sent2 = "The kid is playing with his pet.";
+	
+	
+	
+	public static void main(String[] args) {
+		String sent1 = "The boy is playing with a dog.";
+		String sent2 = "The kid is playing with his pet.";
 
-    String[] words1 = sent1.split(" ");
-    String[] words2 = sent2.split(" ");
-    SentenceMatcherSimilarityMatrix sm1 = new SentenceMatcherSimilarityMatrix(); 
-    sm1.compute(words1, words2);
-}
+		String[] words1 = sent1.split(" ");
+		String[] words2 = sent2.split(" ");
+		SentenceMatcherSimilarityMatrix sm1 = new SentenceMatcherSimilarityMatrix(); 
+		sm1.compute(words1, words2);
+	}
+	
 }
