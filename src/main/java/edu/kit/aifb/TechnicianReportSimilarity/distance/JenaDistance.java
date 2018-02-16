@@ -43,7 +43,7 @@ public class JenaDistance {
 		{
 			this.model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 			InputStream in = FileManager.get().open(inputFileName);
-			model.read(in, ""); 
+			model.read(in, "http://people.aifb.kit.edu/mu2771/step/"); 
 			logger.info("Ontology load time: ({} sec)", (System.currentTimeMillis() - startTime) / 1000.0);
 
 		} 

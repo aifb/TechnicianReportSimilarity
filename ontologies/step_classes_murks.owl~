@@ -25,13 +25,12 @@
      xmlns:dc="http://purl.org/dc/elements/1.1/">
     <owl:Ontology rdf:about="http://people.aifb.kit.edu/mu2771/step-nearly-all">
         <owl:versionIRI rdf:resource="http://people.aifb.kit.edu/mu2771/step-nearly-all/0.1"/>
-        <!--<owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-dimensionalunit.owl"/>
+        <owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-dimensionalunit.owl"/>
         <owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-quantity.owl"/>
         <owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-dimension.owl"/>
         <owl:imports rdf:resource="http://www.loa-cnr.it/ontologies/DUL.owl"/>
         <owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-schema.owl"/>
         <owl:imports rdf:resource="http://people.aifb.kit.edu/mu2771/extern/qudt-unit.owl"/>
---> 
         <skos:changeNote>2017-02 - intervalIn, intervalDisjoint, monthOfYear added; TemporalUnit subclass of TemporalDuration</skos:changeNote>
         <rdfs:label xml:lang="it">Ontologia delle organizzazioni</rdfs:label>
         <rdfs:label xml:lang="en">Ontology for vCard</rdfs:label>
