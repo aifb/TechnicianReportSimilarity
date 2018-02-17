@@ -14,6 +14,7 @@ import edu.cmu.lti.ws4j.impl.Lin;
 import edu.cmu.lti.ws4j.impl.Path;
 import edu.cmu.lti.ws4j.impl.Resnik;
 import edu.cmu.lti.ws4j.impl.WuPalmer;
+import edu.cmu.lti.ws4j.util.WS4JConfiguration;
 
 //Source: https://stackoverflow.com/questions/36300485/how-to-resolve-the-difference-between-the-values-attained-in-the-web-api-and-the
 /**
@@ -22,6 +23,10 @@ import edu.cmu.lti.ws4j.impl.WuPalmer;
  *
  */
 public class SentenceMatcherSimilarityMatrix {
+	
+	public SentenceMatcherSimilarityMatrix(){
+		WS4JConfiguration.getInstance().setMFS(false);
+	}
 	
 	private ILexicalDatabase db = new NictWordNet();
 	
@@ -41,7 +46,7 @@ public class SentenceMatcherSimilarityMatrix {
 	
 	
 	
-	private void compute (String[] words1, String[] words2) {
+	void compute (String[] words1, String[] words2) {
 		logger.info("WuPalmer");
 		RelatednessCalculator rc1 = new WuPalmer(db);
 		{
@@ -143,5 +148,18 @@ public class SentenceMatcherSimilarityMatrix {
 		SentenceMatcherSimilarityMatrix sm1 = new SentenceMatcherSimilarityMatrix(); 
 		sm1.compute(words1, words2);
 	}
+	
+	double[][] computeWuPalmer(String[] words1, String[] words2) {
+		logger.info("WuPalmer");
+		
+		RelatednessCalculator rc1 = new WuPalmer(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+
 	
 }
