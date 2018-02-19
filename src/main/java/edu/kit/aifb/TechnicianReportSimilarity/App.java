@@ -50,11 +50,11 @@ public class App {
 		
 		//TBD: Start variables with lowercase letters
 		TechnicianReportParser parser = new TechnicianReportParser();
-		List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate("1_proposalFake");	
+		List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate("17_proposal");	
 		List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
 		
 		
-		List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate("1_FakeReport");
+		List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate("17_report");
 		List<Concept> reportConceptsWoExampleOrg = parser.removeExampleEntities(reportConcepts);
 		
 //

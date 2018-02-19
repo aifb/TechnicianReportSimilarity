@@ -76,7 +76,7 @@ public class XDomainNlpClient {
 			} else
 				return "POST not successful " + status;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Can not talk to XdomainServer: ", e);
 			return null;
 		} finally {
 			if (connection != null) {
