@@ -53,10 +53,10 @@ public class JenaDistance {
 
 
 
-	public int[][] calculateJenaDistances(List<Concept> reportConcepts,List<Concept> proposalConcepts)
+	public double[][] calculateJenaDistances(List<Concept> reportConcepts,List<Concept> proposalConcepts)
 	{
 		JenaDistance jd = new JenaDistance("./ontologies/step_classes_murks.owl","http://people.aifb.kit.edu/mu2771/step");
-		int[][] distances = new int[reportConcepts.size()][proposalConcepts.size()];
+		double[][] distances = new double[reportConcepts.size()][proposalConcepts.size()];
 		Iterator<Concept> reportIterator =reportConcepts.iterator();
 		int reportCounter = 0;
 		while (reportIterator.hasNext()){

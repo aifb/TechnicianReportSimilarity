@@ -43,10 +43,11 @@ public class TechnicianReportParser {
 		try {
 			File f = new File("./data/" + filename + ".txt");
 
-			// So many different Readers to be able to specify encoding which is necessary
-			// for mutated vowels(Umlaute).
-			Writer writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream("./data/"+filename+"_annotated.txt"), "utf-8"));
+
+//			Writer writer = new BufferedWriter(new OutputStreamWriter(
+//					new FileOutputStream("./data/"+filename+"_annotated.txt"), "utf-8"));
+// So many different Readers to be able to specify encoding which is necessary
+// for mutated vowels(Umlaute).
 			BufferedReader b = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 
 			String readLine = "";
@@ -95,7 +96,7 @@ public class TechnicianReportParser {
 			}
 			
 			b.close();
-			writer.close();
+			//writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,7 +139,7 @@ public class TechnicianReportParser {
 					String body = "{ " + "\"body\":\"" + message + "\"" + "," + "\"tags\":[]" + " }";
 					//Get the annotated text from the XDomainNLP Server
 					String location = nlpService.executePostNer(targetURL, body);
-					logger.info(location);
+					logger.info("LineByLine:" + location);
 					String annotated = nlpService.executeGetNer(location);
 					logger.info(annotated);
 

@@ -54,16 +54,16 @@ public class AppTest
     public void testStepPlatformCall() {
     	
 
-		XDomainNlpClient nlpService = new XDomainNlpClient();
-		JsonElement annotated = nlpService.executeGetStepPlatform("https://step-platform.usu-research.ml/step-platform-app/v1/api/marmotta/ldp/StackOverflow/StackoverflowQuestion", "aifbtech", "aifbtech");
-		
-		logger.info(annotated.toString());
-		
-		TechnicianReportParser parser = new TechnicianReportParser();
-		List<Concept> reportConceptsFromStackoverflow = parser.parseRelevantPartsString(annotated.toString());
-		
-
-		logger.info(reportConceptsFromStackoverflow.toString());
+//		XDomainNlpClient nlpService = new XDomainNlpClient();
+//		JsonElement annotated = nlpService.executeGetStepPlatform("https://step-platform.usu-research.ml/step-platform-app/v1/api/marmotta/ldp/StackOverflow/StackoverflowQuestion", "aifbtech", "aifbtech");
+//		
+//		logger.info(annotated.toString());
+//		
+//		TechnicianReportParser parser = new TechnicianReportParser();
+//		List<Concept> reportConceptsFromStackoverflow = parser.parseRelevantPartsString(annotated.toString());
+//		
+//
+//		logger.info(reportConceptsFromStackoverflow.toString());
 		
     }
 }

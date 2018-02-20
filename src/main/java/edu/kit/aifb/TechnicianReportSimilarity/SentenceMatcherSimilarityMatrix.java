@@ -14,6 +14,7 @@ import edu.cmu.lti.ws4j.impl.Lin;
 import edu.cmu.lti.ws4j.impl.Path;
 import edu.cmu.lti.ws4j.impl.Resnik;
 import edu.cmu.lti.ws4j.impl.WuPalmer;
+import edu.cmu.lti.ws4j.util.WS4JConfiguration;
 
 //Source: https://stackoverflow.com/questions/36300485/how-to-resolve-the-difference-between-the-values-attained-in-the-web-api-and-the
 /**
@@ -22,6 +23,10 @@ import edu.cmu.lti.ws4j.impl.WuPalmer;
  *
  */
 public class SentenceMatcherSimilarityMatrix {
+	
+	public SentenceMatcherSimilarityMatrix(){
+		WS4JConfiguration.getInstance().setMFS(false);
+	}
 	
 	private ILexicalDatabase db = new NictWordNet();
 	
@@ -41,7 +46,7 @@ public class SentenceMatcherSimilarityMatrix {
 	
 	
 	
-	private void compute (String[] words1, String[] words2) {
+	void compute (String[] words1, String[] words2) {
 		logger.info("WuPalmer");
 		RelatednessCalculator rc1 = new WuPalmer(db);
 		{
@@ -142,6 +147,105 @@ public class SentenceMatcherSimilarityMatrix {
 		String[] words2 = sent2.split(" ");
 		SentenceMatcherSimilarityMatrix sm1 = new SentenceMatcherSimilarityMatrix(); 
 		sm1.compute(words1, words2);
+	}
+	
+	double[][] computeWuPalmer(String[] words1, String[] words2) {
+		logger.info("WuPalmer");
+		
+		RelatednessCalculator rc1 = new WuPalmer(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+	double[][] computeResnik(String[] words1, String[] words2) {
+		logger.info("Resnik");
+		
+		RelatednessCalculator rc1 = new Resnik(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+	double[][] computeJiangConrath(String[] words1, String[] words2) {
+		logger.info("JiangConrath");
+		
+		RelatednessCalculator rc1 = new JiangConrath(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+	double[][] computeLin(String[] words1, String[] words2) {
+		logger.info("Lin");
+		
+		RelatednessCalculator rc1 = new Lin(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+	double[][] computeLeacockChodorow(String[] words1, String[] words2) {
+		logger.info("LeacockChodorow");
+		
+		RelatednessCalculator rc1 = new LeacockChodorow(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+	double[][] computePath(String[] words1, String[] words2) {
+		logger.info("Path");
+		
+		RelatednessCalculator rc1 = new Path(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+
+	
+	double[][] computeLesk(String[] words1, String[] words2) {
+		logger.info("Lesk");
+		
+		RelatednessCalculator rc1 = new Lesk(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
+	}
+	
+
+	
+	double[][] computeHirstStOnge(String[] words1, String[] words2) {
+		logger.info("HirstStOnge");
+		
+		RelatednessCalculator rc1 = new HirstStOnge(db);
+		double[][] s1 = getSimilarityMatrix(words1, words2,rc1);
+			for(int i=0; i<words1.length; i++){
+				for(int j=0; j< words2.length; j++){
+					logger.info(s1[i][j] +"\t");
+			}}
+	return s1;
 	}
 	
 }
