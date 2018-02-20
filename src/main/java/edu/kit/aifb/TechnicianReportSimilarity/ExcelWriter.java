@@ -68,4 +68,37 @@ public class ExcelWriter {
 	            e.printStackTrace();
 	        }
 	    }
+
+		public void writeAllToExcel(List<Concept> reportConcepts, String[] reportLabelsArray, List<Concept> proposalConcepts, String[] proposalLabelsArray, int number) {
+
+			SentenceMatcherSimilarityMatrix sm1 = new SentenceMatcherSimilarityMatrix(); 
+			
+			double[][] similarities = sm1.computeWuPalmer(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("WuPalmer", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computeResnik(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("Resnik", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computeJiangConrath(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("JiangConrath", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computeLin(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("Lin", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computeLeacockChodorow(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("LeacockChodorow", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computePath(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("Path", reportConcepts, proposalConcepts, similarities);
+
+			similarities = sm1.computeLesk(reportLabelsArray, proposalLabelsArray);
+			writeToExcel("Lesk", reportConcepts, proposalConcepts, similarities);
+
+			//		Computation very slow, didn't finish for several minutes.
+			//		double [][] similarities = sm1.computeHirstStOnge(reportLabelsArray, proposalLabelsArray);
+			//		ew.writeToExcel("HirstStOnge", reportConcepts, proposalConcepts, similarities);
+
+			writeWorkbookToFile(number + "_WS4JResults_WoExample");
+			
+		}
 }
