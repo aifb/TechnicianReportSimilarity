@@ -38,8 +38,8 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		//app.runAllJenaAndWriteToExcel();
-		app.runWS4J();
+		app.runAllJenaAndWriteToExcel();
+		//app.runWS4J();
 
 
 	}
@@ -50,7 +50,7 @@ public class App {
 	 */
 	private void runAllJenaAndWriteToExcel() {
 		ExcelWriter ew = new ExcelWriter();
-		for (int i = 10; i<28;i++)
+		for (int i = 25; i<26;i++)
 		{	//These are the reports/proposals which are not going through.
 			if(i == 12 || i == 23 || i == 24) {
 				continue;
