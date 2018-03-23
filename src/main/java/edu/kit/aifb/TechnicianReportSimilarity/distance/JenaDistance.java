@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.ontology.OntResource;
 import org.apache.jena.ontology.OntTools;
 import org.apache.jena.ontology.OntTools.Path;
 import org.apache.jena.ontology.OntTools.PredicatesFilter;
@@ -26,15 +27,15 @@ import edu.kit.aifb.TechnicianReportSimilarity.Concept;
 public class JenaDistance {
 
 	private final Logger logger = LoggerFactory.getLogger(JenaDistance.class);
-	
+
 	public OntModel model;
 
-	
+
 	public JenaDistance() {
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	public JenaDistance(String inputFileName, String namespace) {
 		long startTime = System.currentTimeMillis();
 
@@ -43,21 +44,21 @@ public class JenaDistance {
 		{
 			this.model = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 			InputStream in = FileManager.get().open(inputFileName);
-			model.read(in, "http://people.aifb.kit.edu/mu2771/step/asd"); 
+			model.read(in, "http://people.aifb.kit.edu/mu2771/step#"); 
 			logger.info("Ontology load time: ({} sec)", (System.currentTimeMillis() - startTime) / 1000.0);
 
 		} 
 	}
-	
+
 
 
 
 
 	public double[][] calculateJenaDistances(List<Concept> reportConcepts,List<Concept> proposalConcepts)
 	{
-		JenaDistance jd = new JenaDistance("./ontologies/step_classes_murks.owl","http://people.aifb.kit.edu/mu2771/step");
+		JenaDistance jd = new JenaDistance("./ontologies/step_all_with_inverted_relations.owl","http://people.aifb.kit.edu/mu2771/step");
 		double[][] distances = new double[reportConcepts.size()][proposalConcepts.size()];
-		Iterator<Concept> reportIterator =reportConcepts.iterator();
+		Iterator<Concept> reportIterator = reportConcepts.iterator();
 		int reportCounter = 0;
 		while (reportIterator.hasNext()){
 			Concept reportConcept = reportIterator.next();
@@ -82,49 +83,47 @@ public class JenaDistance {
 
 
 	}
-	
-	
+
+
 
 	public int FindJenaDistance(String fromSubClassURI, String toSuperClassURI) {
 
 		// Jena implementation       
-		//        String fromSubClassURI = "http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder";
-		//        String toSuperClassURI = "http://people.aifb.kit.edu/mu2771/step#UnplannedWorkOrder";
+
+		OntResource start = model.getOntResource(fromSubClassURI);
+		OntResource end = model.getOntResource(toSuperClassURI);
 
 
-		OntClass fromSubClass = model.getOntClass(fromSubClassURI);
-		OntClass toSuperClass = model.getOntClass(toSuperClassURI);
-		//OntClass fromSubClass = model.getOntClass("http://people.aifb.kit.edu/mu2771/step#FinishedWorkOrder");
-		//        OntClass fromSubClass = model.getOntClass("http://people.aifb.kit.edu/mu2771/step#powder_spray_device");
-		//        OntClass toSuperClass = model.getOntClass("http://people.aifb.kit.edu/mu2771/step#fan");
 
-
-		//		To be discussed with Sebastian: it works with Filter.any. Relation is rdfs:subclassOf. How to get that into PropertyImpl.
-		//        Path path = OntTools.findShortestPath(model, fromSubClass, toSuperClass, Filter.any);
 
 		Collection <Property> sameAsCollection = new ArrayList <Property>();
-		PropertyImpl sameAs = new PropertyImpl("http://www.w3.org/2002/07/owl#sameAs");
-		sameAsCollection.add(sameAs);
+		sameAsCollection.add(new PropertyImpl("http://www.w3.org/2002/07/owl#sameAs"));
 		PredicatesFilter sameAsPf = new PredicatesFilter(sameAsCollection);
-		Path sameAsPath = OntTools.findShortestPath(model, fromSubClass, toSuperClass, sameAsPf);
-		if (sameAsPath != null)
-		{
-			logger.info(fromSubClass +" and " + toSuperClass + " are connected by a sameAs relation.");
+
+		
+		if (OntTools.findShortestPath(model, start, end, sameAsPf) != null) {
+			
+			logger.warn(start +" and " + end + " are connected by a sameAs relation.");
 			return 0;
-		}
-		else if(fromSubClassURI.equals(toSuperClassURI)){
-			logger.info("Same node");
+			
+		} else if(fromSubClassURI.equals(toSuperClassURI)){
+
+			logger.warn(start + " and " + end + " are the same node!");
 			return 0;
-		}
-		else
-		{
+			
+		} else {
+			
 			Collection <Property> predicates = new ArrayList <Property>();
-			PropertyImpl subClassOf = new PropertyImpl("http://www.w3.org/2000/01/rdf-schema#subClassOf");
-			predicates.add(subClassOf);
-			PropertyImpl subClassOfInverted = new PropertyImpl("http://www.example.org/subClassOfInverted");
-			predicates.add(subClassOfInverted);
+			
+//			predicates.add(new PropertyImpl("http://www.w3.org/2000/01/rdf-schema#subClassOf"));
+//			predicates.add(new PropertyImpl("http://www.example.org/subClassOfInverted"));
+			predicates.addAll(StepOntologyHelper.getUsedProperties());
+			predicates.addAll(StepOntologyHelper.getInvertefProperties());
+			
 			PredicatesFilter pf = new PredicatesFilter(predicates);
-			Path path = OntTools.findShortestPath(model, fromSubClass, toSuperClass, pf);
+			
+			// Start the shortest path algorithm
+			Path path = OntTools.findShortestPath(model, start, end, pf);
 
 			if (path != null){
 				int superClasses = 0;
@@ -132,10 +131,10 @@ public class JenaDistance {
 					superClasses++;
 					logger.info(s.getObject().toString());
 				}
-				logger.info("Shortest distance from " + fromSubClass + " to " + toSuperClass + " = " + superClasses);
+				logger.info("Shortest distance from " + start + " to " + end + " = " + superClasses);
 				return superClasses;
-			}else {
-				logger.info("No path from " + fromSubClass + " to " + toSuperClass);
+			} else {
+				logger.warn("No path from " + start + " to " + end);
 				return -1;
 			}
 		}

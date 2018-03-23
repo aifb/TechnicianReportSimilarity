@@ -1,0 +1,4 @@
+select ?obj (CONCAT(STR(?rel), '_invert') AS ?relation) ?Concept where {
+ ?Concept ?rel ?obj .
+ ?obj a ?class .
+} 
