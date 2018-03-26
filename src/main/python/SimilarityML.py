@@ -39,7 +39,7 @@ def model_evaluation():
 
     print(confusion_matrix(y_test, y_pred))
     
-#model_training_and_eval()
+model_evaluation()
 
 def training_productive_model():
     similarities_y = similarities['label']
@@ -50,7 +50,7 @@ def training_productive_model():
     
     joblib.dump(clf,'./svm_model.pkl')
 
-#training_productive_model()
+training_productive_model()
 
 def label_new_instance():
     similarity = pd.read_excel('../../../result_sim/ReportProposal_25.xlsx', index_col = 0)
