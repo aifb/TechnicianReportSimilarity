@@ -157,7 +157,6 @@ Ontology engineering by Simon J D Cox</skos:historyNote>
             </rdf:Description>
         </terms:contributor>
         <rdfs:seeAlso rdf:resource="http://www.semantic-web-journal.net/content/time-ontology-extended-non-gregorian-calendar-applications"/>
-        <skos:changeNote>2017-04-06 - hasTime, hasXSDDuration added; Number removed; all duration elements changed to xsd:decimal</skos:changeNote>
     </owl:Ontology>
     
 

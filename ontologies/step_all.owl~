@@ -722,9 +722,9 @@ above the local reference ellipsoid).</rdfs:comment>
 
     
 
-    <!-- http://www.w3.org/2001/sw/BestPractices/OEP/SimplePartWhole/part.owl#partOf -->
+    <!-- https://www.w3.org/2001/sw/BestPractices/OEP/SimplePartWhole/part.owl#partOf -->
 
-    <owl:ObjectProperty rdf:about="http://www.w3.org/2001/sw/BestPractices/OEP/SimplePartWhole/part.owl#partOf">
+    <owl:ObjectProperty rdf:about="https://www.w3.org/2001/sw/BestPractices/OEP/SimplePartWhole/part.owl#partOf">
         <rdfs:label xml:lang="en">part of</rdfs:label>
     </owl:ObjectProperty>
     
