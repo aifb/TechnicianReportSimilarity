@@ -38,8 +38,16 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		app.runAllJenaAndWriteToExcel();
-		//app.runWS4J();
+		//app.runAllJenaAndWriteToExcel();
+		for (int i = 26; i<28;i++)
+		{
+			if(i == 12 || i == 23 || i == 24) {
+				continue;
+			}
+			app.runWS4J(i);
+			//These are the reports/proposals which are not going through.
+		}
+		
 
 
 	}
@@ -88,9 +96,8 @@ public class App {
 	}
 
 
-	private void runWS4J() {
+	private void runWS4J(int number) {
 
-		int number = 25;
 		TechnicianReportParser parser = new TechnicianReportParser();
 		List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(number + "_proposal");	
 		List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
