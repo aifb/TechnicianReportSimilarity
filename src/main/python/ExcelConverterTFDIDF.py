@@ -1,4 +1,4 @@
-import pandas as pd
+import pandas as pd 
 
 columns = ['id','WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk']
 df = pd.DataFrame(columns= columns)
@@ -9,7 +9,7 @@ for i in range (10,28):
         continue
     else:
         print i
-        xls = pd.ExcelFile('../../../data/'+str(i)+'_WS4JResults_WoExample.xlsx')
+        xls = pd.ExcelFile('../../../data/'+str(i)+'_WS4JResults_WoExample.xlsx') # glob().glob or files = [f for f in os.listdir('.') if re.match(r'[0-9]+.*\.jpg', f)]
         WuPalmer = pd.read_excel(xls, 'WuPalmer')
         Resnik = pd.read_excel(xls, 'Resnik')
         JiangConrath = pd.read_excel(xls, 'JiangConrath')
@@ -17,6 +17,7 @@ for i in range (10,28):
         LeacockChodorow = pd.read_excel(xls, 'LeacockChodorow')
         Path = pd.read_excel(xls, 'Path')
         Lesk = pd.read_excel(xls, 'Lesk')
+        
 
         # Is a similarity measure between 0.0 and 1.0
         WuPalmerAggregated = pd.Series.max((pd.DataFrame.max(WuPalmer)))
@@ -56,7 +57,7 @@ for i in range (10,28):
         df.at[a, 'Lesk'] = LeskAggregated
         a = a + 1
 print df
-df.dropna(inplace = True)
+df.dropna(inplace = True) # empty table so ignore report pair
 print df
 
 writer = pd.ExcelWriter('../../../result_sim/AggregatedResults_woLabels.xlsx')
