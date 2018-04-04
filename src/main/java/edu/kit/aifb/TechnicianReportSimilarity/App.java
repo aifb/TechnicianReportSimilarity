@@ -38,15 +38,18 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		app.runAllJenaAndWriteToExcel();
-//		for (int i = 10; i<28;i++)
-//		{
-//			if(i == 12 || i == 23 || i == 24) {
-//				continue;
-//			}
-//			app.runWS4J(i);
-//			//These are the reports/proposals which are not going through.
-//		}
+		//app.runAllJenaAndWriteToExcel();
+		for (int i = 10; i<28;i++)
+		{
+			try {
+				app.runWS4J(i);
+			} catch(NullPointerException npe) {;
+				continue;
+			}
+			
+			
+			//These are the reports/proposals which are not going through.
+		}
 		
 
 
@@ -62,11 +65,6 @@ public class App {
 			for (int i = 10; i<28;i++)
 			{
 				try {
-				//These are the reports/proposals which are not going through.
-//				if(i == 12 || i == 23 || i == 24) {
-//					continue;
-//				}
-				System.out.println(i);
 				TechnicianReportParser parser = new TechnicianReportParser();
 				List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(i+"_proposal");	
 				List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
@@ -105,7 +103,7 @@ public class App {
 	}
 
 
-	private void runWS4J(int number) {
+	private void runWS4J(int number)  {
 
 		TechnicianReportParser parser = new TechnicianReportParser();
 		List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(number + "_proposal");	
