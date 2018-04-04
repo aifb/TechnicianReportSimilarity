@@ -18,9 +18,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelWriter {
 	private Workbook workbook;
-
+	int rowIndexAllLabels = 0;
 	public ExcelWriter() {
 		workbook = new XSSFWorkbook();
+		
 	}
 
 	public void writeToExcel(String sheetname, List<Concept>reportConcepts, List<Concept>proposalConcepts, double[][] distances){
@@ -100,5 +101,19 @@ public class ExcelWriter {
 
 		writeWorkbookToFile(number + "_WS4JResults_WoExample");
 
+	}
+
+	public void writeLabelsInRows(List<String> allLabels) {
+		Sheet sheet = workbook.createSheet("All labels");
+		Iterator<String> iter = allLabels.iterator();
+		while(iter.hasNext()){
+			Row row = sheet.createRow(rowIndexAllLabels++);
+			String label = iter.next();
+			//String label = c.getLabel();
+			int cellIndex = 0;
+			row.createCell(cellIndex++).setCellValue(label);
+		}	
+		writeWorkbookToFile("AllLabels");
+	
 	}
 }

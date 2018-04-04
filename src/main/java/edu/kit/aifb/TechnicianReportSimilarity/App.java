@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 //import io.swagger.jaxrs.config.BeanConfig;
 //import sample.hello.resources.HelloResource;
@@ -39,17 +40,15 @@ public class App {
 
 		App app = new App();
 		//app.runAllJenaAndWriteToExcel();
-		for (int i = 10; i<28;i++)
-		{
-			try {
-				app.runWS4J(i);
-			} catch(NullPointerException npe) {;
-				continue;
-			}
-			
-			
-			//These are the reports/proposals which are not going through.
-		}
+//		for (int i = 10; i<28;i++)
+//		{
+//			try {
+//				app.runWS4J(i);
+//			} catch(NullPointerException npe) {;
+//				continue;
+//			}
+//		}
+		app.writeAllLabelsToExcel();
 		
 
 
@@ -141,6 +140,47 @@ public class App {
 		ew.writeAllToExcel(reportConcepts, reportLabelsArray, proposalConcepts, proposalLabelsArray, number);
 
 
+	}
+
+	public void writeAllLabelsToExcel() {
+		ExcelWriter ew = new ExcelWriter();
+		List<String> allLabels = new ArrayList<String>();
+		for (int i = 10; i<28;i++) {
+			try {
+				TechnicianReportParser parser = new TechnicianReportParser();
+				List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(i+"_proposal");	
+				List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
+
+
+				List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate(i+"_report");
+				List<Concept> reportConceptsWoExampleOrg = parser.removeExampleEntities(reportConcepts);
+				
+				Iterator<Concept> reportIterator = reportConceptsWoExampleOrg.iterator();
+				List <String> reportLabels = new ArrayList<String>();
+				while(reportIterator.hasNext()) {
+					reportLabels.add(reportIterator.next().getLabel());
+				}
+
+				Iterator<Concept> proposalIterator = proposalConceptsWoExampleOrg.iterator();
+				List <String> proposalLabels = new ArrayList<String>();
+				while(proposalIterator.hasNext()) {
+					proposalLabels.add(proposalIterator.next().getLabel());
+				}
+				
+				allLabels.addAll(proposalLabels);
+				allLabels.addAll(reportLabels);
+				
+				
+				
+				}catch(NullPointerException npe) {
+					continue;
+				}	
+		}
+		ew.writeLabelsInRows(allLabels);
+		
+		
+
+		
 	}
 
 }
