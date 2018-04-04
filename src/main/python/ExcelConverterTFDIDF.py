@@ -18,7 +18,7 @@ for i in range (10,28):
         Path = pd.read_excel(xls, 'Path')
         Lesk = pd.read_excel(xls, 'Lesk')
 
-        # Is a relatedness measure between 0.0 and 1.0
+        # Is a similarity measure between 0.0 and 1.0
         WuPalmerAggregated = pd.Series.max((pd.DataFrame.max(WuPalmer)))
         print(WuPalmerAggregated)
 
@@ -26,20 +26,20 @@ for i in range (10,28):
         ResnikAggregated = pd.Series.max((pd.DataFrame.max(Resnik)))
         print(ResnikAggregated)
 
-        # Distance measure between 0.0 and infinity
-        JiangConrathAggregated = pd.Series.min((pd.DataFrame.min(JiangConrath)))
+        # Similarity measure between 0.0 and infinity
+        JiangConrathAggregated = pd.Series.max((pd.DataFrame.max(JiangConrath)))
         print(JiangConrathAggregated)
 
-        # Distance measure between 0.0 and infinity
-        LinAggregated = pd.Series.min((pd.DataFrame.min(Lin)))
+        # Similarity measure between 0.0 and infinity
+        LinAggregated = pd.Series.max((pd.DataFrame.max(Lin)))
         print(LinAggregated)
 
-        # Distance measure between 0.0 and infinity - Not 100% sure
-        LeacockChodorowAggregated = pd.Series.min((pd.DataFrame.min(LeacockChodorow)))
+        # Similarity measure between 0.0 and infinity
+        LeacockChodorowAggregated = pd.Series.max((pd.DataFrame.max(LeacockChodorow)))
         print(LeacockChodorowAggregated)
 
-        # Distance measure between 0.0 and infinity - Not 100% sure
-        PathAggregated = pd.Series.min((pd.DataFrame.min(Path)))
+        # Similarity measure between 0.0 and infinity
+        PathAggregated = pd.Series.max((pd.DataFrame.max(Path)))
         print(PathAggregated)
 
         # Similarity measure between 0.0 and infinity
@@ -59,9 +59,6 @@ print df
 df.dropna(inplace = True)
 print df
 
-writer = pd.ExcelWriter('../../../result_sim/AggregatedResults.xlsx')
+writer = pd.ExcelWriter('../../../result_sim/AggregatedResults_woLabels.xlsx')
 df.to_excel(writer,'Sheet1')
 writer.save()
-
-
-

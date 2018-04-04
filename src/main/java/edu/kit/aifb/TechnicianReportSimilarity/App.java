@@ -38,15 +38,15 @@ public class App {
 	public static void main(String[] args) {
 
 		App app = new App();
-		//app.runAllJenaAndWriteToExcel();
-		for (int i = 26; i<28;i++)
-		{
-			if(i == 12 || i == 23 || i == 24) {
-				continue;
-			}
-			app.runWS4J(i);
-			//These are the reports/proposals which are not going through.
-		}
+		app.runAllJenaAndWriteToExcel();
+//		for (int i = 10; i<28;i++)
+//		{
+//			if(i == 12 || i == 23 || i == 24) {
+//				continue;
+//			}
+//			app.runWS4J(i);
+//			//These are the reports/proposals which are not going through.
+//		}
 		
 
 
@@ -58,35 +58,44 @@ public class App {
 	 */
 	private void runAllJenaAndWriteToExcel() {
 		ExcelWriter ew = new ExcelWriter();
-		for (int i = 25; i<26;i++)
-		{	//These are the reports/proposals which are not going through.
-			if(i == 12 || i == 23 || i == 24) {
+
+			for (int i = 10; i<28;i++)
+			{
+				try {
+				//These are the reports/proposals which are not going through.
+//				if(i == 12 || i == 23 || i == 24) {
+//					continue;
+//				}
+				System.out.println(i);
+				TechnicianReportParser parser = new TechnicianReportParser();
+				List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(i+"_proposal");	
+				List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
+
+
+				List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate(i+"_report");
+				List<Concept> reportConceptsWoExampleOrg = parser.removeExampleEntities(reportConcepts);
+
+				//
+				//			XDomainNlpClient nlpService = new XDomainNlpClient();
+				//			JsonElement annotated = nlpService.executeGetStepPlatform("https://step-platform.usu-research.ml/step-platform-app/v1/api/marmotta/ldp/StackOverflow/StackoverflowQuestion", "aifbtech", "aifbtech");
+				//			logger.info(annotated.toString());
+				//			List<Concept> reportConceptsFromStackoverflow = parser.parseRelevantPartsString(annotated.toString());
+
+
+
+
+				JenaDistance jenaDistance = new JenaDistance();
+				double[][] distances = jenaDistance.calculateJenaDistances(reportConceptsWoExampleOrg,proposalConceptsWoExampleOrg);
+
+				//logger.info(Arrays.deepToString(distances));
+
+				ew.writeToExcel(Integer.toString(i), reportConceptsWoExampleOrg, proposalConceptsWoExampleOrg, distances);
+			}catch(NullPointerException npe)
+				{
 				continue;
 			}
-			TechnicianReportParser parser = new TechnicianReportParser();
-			List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(i+"_proposal");	
-			List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
-
-
-			List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate(i+"_report");
-			List<Concept> reportConceptsWoExampleOrg = parser.removeExampleEntities(reportConcepts);
-
-			//
-			//			XDomainNlpClient nlpService = new XDomainNlpClient();
-			//			JsonElement annotated = nlpService.executeGetStepPlatform("https://step-platform.usu-research.ml/step-platform-app/v1/api/marmotta/ldp/StackOverflow/StackoverflowQuestion", "aifbtech", "aifbtech");
-			//			logger.info(annotated.toString());
-			//			List<Concept> reportConceptsFromStackoverflow = parser.parseRelevantPartsString(annotated.toString());
-
-
-
-
-			JenaDistance jenaDistance = new JenaDistance();
-			double[][] distances = jenaDistance.calculateJenaDistances(reportConceptsWoExampleOrg,proposalConceptsWoExampleOrg);
-
-			logger.info(Arrays.deepToString(distances));
-
-			ew.writeToExcel(Integer.toString(i), reportConceptsWoExampleOrg, proposalConceptsWoExampleOrg, distances);
 		}
+
 
 
 		//		SimilarityCalculationDemo SimilarityCalculator = new SimilarityCalculationDemo();
