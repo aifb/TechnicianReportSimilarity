@@ -1,10 +1,32 @@
 import pandas as pd
 import glob
 import re
+import numpy as np
 
-columns = ['id','WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk']
+columns = ['id','WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk', 'Jena']
 df = pd.DataFrame(columns= columns)
 a = 0
+
+Jenaxls = pd.ExcelFile('../../../data/JenaResults.xlsx')
+
+def findJenaSheetAndAggregate(i):
+    #Conversion to string since sheet names are strings. Else numbering is used.
+    sheet = pd.read_excel(Jenaxls, str(id))
+
+    #Distance of zero is replaced by 1 to obtain similarity of 1 when inverting
+    sheet.replace(0,1,inplace=True)
+
+
+
+    sheet = sheet.transform(lambda x: 1/x)
+    #print sheet
+
+    #Distance/Similarity of -1, i.e. no path found ist replaced by 0 to indicate that similarity is as low as possible
+    sheet.replace(-1,0,inplace=True)
+    #print sheet
+
+    JenaAggregated = pd.Series.max(pd.DataFrame.max(sheet))
+    return JenaAggregated
 
 #Find all filenames matching the pattern
 filenames = glob.glob('../../../data/*_WS4JResults_WoExample.xlsx')
@@ -55,6 +77,11 @@ for filename in filenames:
     #Extract the first number and use it as is
     id = int(re.search(r'\d+', filenameReplaced).group())
 
+    JenaAggregated = findJenaSheetAndAggregate(id)
+
+
+
+
     df.at[a, 'id'] = id
     df.at[a, 'WuPalmer'] = WuPalmerAggregated
     df.at[a, 'Resnik'] = ResnikAggregated
@@ -63,6 +90,7 @@ for filename in filenames:
     df.at[a, 'LeacockChodorow'] = LeacockChodorowAggregated
     df.at[a, 'Path'] = PathAggregated
     df.at[a, 'Lesk'] = LeskAggregated
+    df.at[a, 'Jena'] = JenaAggregated
     a = a + 1
 
 print df
