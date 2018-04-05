@@ -116,4 +116,28 @@ public class ExcelWriter {
 		writeWorkbookToFile("AllLabels");
 	
 	}
+	
+	public void writeLabelsForIDFScores(String sheetname, List<String>reportLabels, List<String>proposalLabels, int number) {
+		Sheet sheet = workbook.createSheet(sheetname);
+		int rowIndex = 1;
+		Iterator<String> iter = reportLabels.iterator();
+		while(iter.hasNext()){
+			Row row = sheet.createRow(rowIndex++);
+			String label = iter.next();
+			//String label = c.getLabel();
+			int cellIndex = 0;
+			row.createCell(cellIndex++).setCellValue(label);
+		}
+		rowIndex = 0;
+		Iterator<String> iter2 = proposalLabels.iterator();
+		Row row = sheet.createRow(rowIndex);
+		int cellIndex = 1;
+		while(iter2.hasNext()){
+			String label = iter2.next();
+			//first place in row is name
+			row.createCell(cellIndex++).setCellValue(label);
+		}
+		
+		writeWorkbookToFile(number + "_LabelsForIDF");
+	}
 }

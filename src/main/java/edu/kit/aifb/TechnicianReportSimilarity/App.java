@@ -48,7 +48,11 @@ public class App {
 //				continue;
 //			}
 //		}
-		app.writeAllLabelsToExcel();
+//		app.writeAllLabelsToExcel();
+		for (int i = 10; i<28;i++) {
+			app.writeLabelsForIDFScores(i);
+		}
+		
 		
 
 
@@ -176,11 +180,35 @@ public class App {
 					continue;
 				}	
 		}
-		ew.writeLabelsInRows(allLabels);
-		
-		
+		ew.writeLabelsInRows(allLabels);	
+	}
+	public void writeLabelsForIDFScores(int number) {
+		ExcelWriter ew = new ExcelWriter();
+		try {
+			TechnicianReportParser parser = new TechnicianReportParser();
+			List<Concept> proposalConcepts = parser.readInProposalLineByLineAndAnnotate(number+"_proposal");	
+			List<Concept> proposalConceptsWoExampleOrg = parser.removeExampleEntities(proposalConcepts);
 
+
+			List<Concept> reportConcepts = parser.readInReportLineByLineAndAnnotate(number+"_report");
+			List<Concept> reportConceptsWoExampleOrg = parser.removeExampleEntities(reportConcepts);
+			
+			Iterator<Concept> reportIterator = reportConceptsWoExampleOrg.iterator();
+			List <String> reportLabels = new ArrayList<String>();
+			while(reportIterator.hasNext()) {
+				reportLabels.add(reportIterator.next().getLabel());
+			}
+
+			Iterator<Concept> proposalIterator = proposalConceptsWoExampleOrg.iterator();
+			List <String> proposalLabels = new ArrayList<String>();
+			while(proposalIterator.hasNext()) {
+				proposalLabels.add(proposalIterator.next().getLabel());
+			
+			}
+			ew.writeLabelsForIDFScores("Labels", reportLabels, proposalLabels, number);
+	}catch(NullPointerException npe) {
+		System.out.println("XDomain Error");
+	}	
 		
 	}
-
 }
