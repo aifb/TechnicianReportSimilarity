@@ -7,6 +7,9 @@ from sklearn.externals import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 import seaborn as sns
+import numpy as np
+
+measures = ['WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk', 'Jena']
 
 #Readable font size
 plt.rcParams.update({'font.size': 22})
@@ -24,9 +27,9 @@ organizational_information = similarities.ix[similarities.label == -1.0]
 
 
 def scatterplot(x, y):
-    plt.plot(similar[x], similar[y], '+', label = 'similar')
-    plt.plot(not_similar[x], not_similar[y], 'o', label = 'not similar')
-    plt.plot(organizational_information[x], organizational_information[y], 'x', label = 'organizational')
+    plt.plot(similar[x], similar[y], '+', label = 'similar', markersize = 22)
+    plt.plot(not_similar[x], not_similar[y], 'o', label = 'not similar', markersize = 22)
+    plt.plot(organizational_information[x], organizational_information[y], 'x', label = 'organizational', markersize = 22)
     plt.legend()
     plt.xlabel(x)
     plt.ylabel(y)
@@ -58,7 +61,25 @@ def boxplot():
     sns.boxplot(x='label', y='Jena', data = similarities)
 
     plt.show()
-boxplot()
+#boxplot()
+
+def descriptive_statistics():
+    print '+++++Descriptive statistics+++++'
+    print 'Total number of instances'
+    print similarities.shape[0]
+    print 'Number of instances labelled similar'
+    print similar.shape[0]
+    print 'Number of instances labelled not similar'
+    print not_similar.shape[0]
+    print 'Number of instances labelled as organizational information'
+    print organizational_information.shape[0]
+
+    for measure in measures:
+        print measure
+        print 'mean: ' + str(np.mean(similarities[measure]))
+        print 'sd: '+ str(np.std(similarities[measure]))
+descriptive_statistics()
+
 
 def model_evaluation():
     similarities_y = similarities['label']
