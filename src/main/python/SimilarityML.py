@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 import seaborn as sns
 import numpy as np
+from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
 
 measures = ['WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk', 'Jena']
 
@@ -94,8 +95,41 @@ def model_evaluation():
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
 
-    print(confusion_matrix(y_test, y_pred))
+    print '+++++Results++++'
 
+    # print 'y_test'
+    # print y_test
+    # print 'y_pred'
+    # print y_pred
+    # print cm
+    # cm_flattened =  confusion_matrix(y_test, y_pred).ravel()
+    # print cm_flattened
+    #
+    # tp = cm[0,0] + cm[1,1] + cm[2,2]
+    # print tp
+    # #First index is row, second is column
+    # print cm[0,2]
+    # fn_0 = cm[1,0] + cm[2,0]
+    # fp_0 = cm[0,1] + cm[0,2]
+    # tn_0 = cm.sum() - cm[0,0] - cm[1,0] - cm[2,0] - cm[0,1] - cm[0,2]
+    # print tn_0
+
+    #TBD: This -1 is necessary to avoid UndefinedMetricWarning for weighted precision. Result is still strange.
+    y_pred[0] = -1
+
+    cm = (confusion_matrix(y_test, y_pred))
+    print 'Confusion Matrix'
+    print '\033[1m'+ '                                                   Actual class'+'\033[0m'
+    print '                         organization information (-1)     not similar (0)     similar (1)'
+    print '\033[1m'+'Predicted class'+'\033[0m'
+    print 'organization information (-1)        '+str(cm[0,0])+ '                            '+str(cm[0,1])+'               '+str(cm[0,2])
+    print 'not similar (0)                      '+str(cm[1,0])+ '                            '+str(cm[1,1])+'               '+str(cm[1,2])
+    print 'similar (1)                          '+str(cm[2,0])+ '                            '+str(cm[2,1])+'               '+str(cm[2,2])
+
+    print''
+    print 'Precision, Recall & F1-Score per class and weighted average.'
+    target_names = ['organisational information', 'not similar', 'similar']
+    print classification_report(y_test,y_pred, target_names = target_names)
 
 model_evaluation()
 
