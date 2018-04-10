@@ -126,13 +126,15 @@ def model_evaluation_CV():
     clf = svm.SVC()
     y_pred = cross_val_predict(clf,X, y, cv = kFold)
 
+    #print y
+    #print y_pred
     print '+++++Results++++'
 
     cm = (confusion_matrix(y, y_pred))
     print 'Confusion Matrix'
-    print '\033[1m' + '                                                   Actual class' + '\033[0m'
+    print '\033[1m' + '                                                   Predicted class' + '\033[0m'
     print '                         organization information (-1)     not similar (0)     similar (1)'
-    print '\033[1m' + 'Predicted class' + '\033[0m'
+    print '\033[1m' + 'Actual class' + '\033[0m'
     print 'organization information (-1)        ' + str(cm[0, 0]) + '                            ' + str(
         cm[0, 1]) + '               ' + str(cm[0, 2])
     print 'not similar (0)                      ' + str(cm[1, 0]) + '                            ' + str(
