@@ -9,6 +9,7 @@ from sklearn.tree import DecisionTreeClassifier
 import seaborn as sns
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
+from sklearn.model_selection import cross_val_predict, KFold
 
 measures = ['WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','Lesk', 'Jena']
 
@@ -16,7 +17,7 @@ measures = ['WuPalmer','Resnik','JiangConrath','Lin','LeacockChodorow','Path','L
 plt.rcParams.update({'font.size': 22})
 
 # index = false to get names of sim measures as row names
-similarities = pd.read_excel('../../../result_sim/AggregatedResults_IDFWeighted_with_dummys_class0.xlsx', index_col=0)
+similarities = pd.read_excel('../../../result_sim/AggregatedResults_IDFWeighted.xlsx', index_col=0)
 
 #similarities = pd.DataFrame.transpose(similarities)
 print(similarities)
@@ -82,7 +83,7 @@ def descriptive_statistics():
 descriptive_statistics()
 
 
-def model_evaluation():
+def model_evaluation_one_split():
     similarities_y = similarities['label']
     similarities_X = similarities.drop('label', axis=1)
 
@@ -96,26 +97,6 @@ def model_evaluation():
     y_pred = clf.predict(X_test)
 
     print '+++++Results++++'
-
-    # print 'y_test'
-    # print y_test
-    # print 'y_pred'
-    # print y_pred
-    # print cm
-    # cm_flattened =  confusion_matrix(y_test, y_pred).ravel()
-    # print cm_flattened
-    #
-    # tp = cm[0,0] + cm[1,1] + cm[2,2]
-    # print tp
-    # #First index is row, second is column
-    # print cm[0,2]
-    # fn_0 = cm[1,0] + cm[2,0]
-    # fp_0 = cm[0,1] + cm[0,2]
-    # tn_0 = cm.sum() - cm[0,0] - cm[1,0] - cm[2,0] - cm[0,1] - cm[0,2]
-    # print tn_0
-
-    #TBD: This -1 is necessary to avoid UndefinedMetricWarning for weighted precision. Result is still strange.
-    y_pred[0] = -1
 
     cm = (confusion_matrix(y_test, y_pred))
     print 'Confusion Matrix'
@@ -131,8 +112,39 @@ def model_evaluation():
     target_names = ['organisational information', 'not similar', 'similar']
     print classification_report(y_test,y_pred, target_names = target_names)
 
-model_evaluation()
+#model_evaluation_one_split()
 
+def model_evaluation_CV():
+    y = similarities['label']
+    X = similarities.drop('label', axis=1)
+
+    RANDOM_SEED = 5
+    prng = np.random.RandomState(RANDOM_SEED)
+
+    kFold = KFold(n_splits=10, shuffle=False, random_state=prng)
+    # Guess it would be three class, just
+    clf = svm.SVC()
+    y_pred = cross_val_predict(clf,X, y, cv = kFold)
+
+    print '+++++Results++++'
+
+    cm = (confusion_matrix(y, y_pred))
+    print 'Confusion Matrix'
+    print '\033[1m' + '                                                   Actual class' + '\033[0m'
+    print '                         organization information (-1)     not similar (0)     similar (1)'
+    print '\033[1m' + 'Predicted class' + '\033[0m'
+    print 'organization information (-1)        ' + str(cm[0, 0]) + '                            ' + str(
+        cm[0, 1]) + '               ' + str(cm[0, 2])
+    print 'not similar (0)                      ' + str(cm[1, 0]) + '                            ' + str(
+        cm[1, 1]) + '               ' + str(cm[1, 2])
+    print 'similar (1)                          ' + str(cm[2, 0]) + '                            ' + str(
+        cm[2, 1]) + '               ' + str(cm[2, 2])
+
+    print''
+    print 'Precision, Recall & F1-Score per class and weighted average.'
+    target_names = ['organisational information', 'not similar', 'similar']
+    print classification_report(y, y_pred, target_names=target_names)
+model_evaluation_CV()
 
 def training_productive_model():
     similarities_y = similarities['label']
