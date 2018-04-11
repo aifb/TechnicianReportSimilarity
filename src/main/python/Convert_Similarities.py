@@ -1,8 +1,8 @@
 import pandas as pd
 import glob
 import re
-import Construct_TFIDF_DF_Matrix
 import logging, gensim
+
 
 class Construct_IDF_Matrix:
     def __init__(self):
@@ -11,9 +11,8 @@ class Construct_IDF_Matrix:
         # Our idf scores were computed on current Wikipedia corpus (2.4.18 (?))
         self.tfidf = gensim.models.TfidfModel.load('../resources/tfidf.model')
 
-
     def construct_idf_df(self, number):
-        #There is a corresponding method in App.java which produces this Excel.
+        # There is a corresponding method in App.java which produces this Excel.
         idf_df = pd.read_excel('../../../data/' + str(number) + '_LabelsForIDF.xlsx', header=None)
         # print idf_df
 
@@ -39,13 +38,14 @@ class Construct_IDF_Matrix:
 
         # print idf_scores_df
 
-        #Multiply the idf scores of the labels to get a matrix to be multiplied with similarities
+        # Multiply the idf scores of the labels to get a matrix to be multiplied with similarities
         for i in range(1, idf_df.shape[0]):
             for j in range(1, idf_df.shape[1]):
                 idf_df.at[i, j] = idf_scores_df.iloc[i, 0] * idf_scores_df.iloc[0, j]
         idf_df.reset_index(drop=True, inplace=True)
         print idf_df
         return idf_df
+
 
 # constructor = Construct_TFID_DF_Matrix()
 # constructor.construct_tf_idf_df(10)
@@ -57,16 +57,18 @@ class ExcelConverterIDF:
         self.row_index = 0
 
         self.Jenaxls = pd.ExcelFile('../../../data/JenaResults.xlsx')
+        self.measures = ['WuPalmer', 'Resnik', 'JiangConrath', 'Lin', 'LeacockChodorow', 'Path', 'Lesk']
+
 
     IDF_Constructor = Construct_IDF_Matrix()
 
-    #Jena results are stored in separate Excel and it is necessary to convert the distances to similarities
+    # Jena results are stored in separate Excel and it is necessary to convert the distances to similarities
     def findJenaSheetAndPreprocess(self, id):
         # Conversion to string since sheet names are strings. Else numbering is used.
         sheet = pd.read_excel(self.Jenaxls, str(id))
 
         # Distance of zero is replaced by 1 to obtain similarity of 1 when inverting
-        #TBD: Find way to convert s.t. distance of 1 and 0 are not equal
+        # TBD: Find way to convert s.t. distance of 1 and 0 are not equal
         sheet.replace(0, 1, inplace=True)
 
         # Transform distance to similarity
@@ -86,6 +88,13 @@ class ExcelConverterIDF:
 
         return weighted_similarity_sheet
 
+    #Aggregation is first by rows since there are almost always zero columns.
+    def aggregation(self, df, row_aggregation_function, column_aggregation_function):
+        result = column_aggregation_function(row_aggregation_function(df))
+        #print 'Aggregated Result'
+        #print result
+        return result
+
     def main(self):
         # Find all filenames matching the pattern
         filenames = glob.glob('../../../data/*_WS4JResults_WoExample.xlsx')
@@ -93,15 +102,11 @@ class ExcelConverterIDF:
         for filename in filenames:
             print filename
             xls = pd.ExcelFile(filename)
-            WuPalmer = pd.read_excel(xls, 'WuPalmer')
-            print 'WuPalmer'
-            print WuPalmer
-            Resnik = pd.read_excel(xls, 'Resnik')
-            JiangConrath = pd.read_excel(xls, 'JiangConrath')
-            Lin = pd.read_excel(xls, 'Lin')
-            LeacockChodorow = pd.read_excel(xls, 'LeacockChodorow')
-            Path = pd.read_excel(xls, 'Path')
-            Lesk = pd.read_excel(xls, 'Lesk')
+            SimilaritySheetsDict = {}
+            for measure in self.measures:
+                SimilaritySheetsDict[measure] = pd.read_excel(xls, measure)
+                #print 'SimilaritySheetsDict[measure]'
+                #print SimilaritySheetsDict[measure]
 
             ###Extract the id from the filename###
 
@@ -111,6 +116,7 @@ class ExcelConverterIDF:
             id = int(re.search(r'\d+', filenameReplaced).group())
 
             Jena = self.findJenaSheetAndPreprocess(id)
+            SimilaritySheetsDict['Jena'] = Jena
 
             idf_scores_df = self.IDF_Constructor.construct_idf_df(id)
             # Necessary that the two dataframes to be multiplied have the same size. idf_scores_df has additional index.
@@ -122,66 +128,32 @@ class ExcelConverterIDF:
             except ValueError:
                 continue
 
-            print 'id + idf_scores_df'
-            print id
-            print idf_scores_df
+            # print 'id + idf_scores_df'
+            # print id
+            # print idf_scores_df
 
             # Parametrize the weighting of the idf scores here.
             idf_weight = 1
+            WeightedSimilaritySheetsDict = {}
+            for key in SimilaritySheetsDict.keys():
+                try:
+                    WeightedSimilaritySheetsDict[key] = self.weightWithIDFscores(SimilaritySheetsDict[key],
+                                                                                 idf_scores_df, idf_weight)
+                except ValueError:
+                    continue
 
-            try:
-                WuPalmer = self.weightWithIDFscores(WuPalmer, idf_scores_df, idf_weight)
-                print 'WuPalmerWeighted'
-                print WuPalmer
-                Resnik = self.weightWithIDFscores(Resnik, idf_scores_df, idf_weight)
-                JiangConrath = self.weightWithIDFscores(JiangConrath, idf_scores_df, idf_weight)
-                Lin = self.weightWithIDFscores(Lin, idf_scores_df, idf_weight)
-                LeacockChodorow = self.weightWithIDFscores( LeacockChodorow, idf_scores_df, idf_weight)
-                Path = self.weightWithIDFscores(Path, idf_scores_df, idf_weight)
-                Lesk = self.weightWithIDFscores(Lesk, idf_scores_df, idf_weight)
-                Jena = self.weightWithIDFscores(Jena, idf_scores_df, idf_weight)
-            except ValueError:
-                continue
-            # Is a similarity measure between 0.0 and 1.0
-            WuPalmerAggregated = pd.Series.max((pd.DataFrame.max(WuPalmer)))
-            print 'WuPalmerAggregated'
-            print(WuPalmerAggregated)
+            #pd.DataFrame/Series.mean would be another reasonable option.
+            row_aggregation_function = pd.DataFrame.max
+            columns_aggregation_function = pd.Series.max
 
-            # Is a similarity measure between 0.0 and 1.0
-            ResnikAggregated = pd.Series.max((pd.DataFrame.max(Resnik)))
-            print(ResnikAggregated)
+            AggregatedMeasures = {}
+            for key in WeightedSimilaritySheetsDict.keys():
+                AggregatedMeasures[key] = self.aggregation(WeightedSimilaritySheetsDict[key], row_aggregation_function, columns_aggregation_function)
 
-            # Similarity measure between 0.0 and infinity
-            JiangConrathAggregated = pd.Series.max((pd.DataFrame.max(JiangConrath)))
-            print(JiangConrathAggregated)
-
-            # Similarity measure between 0.0 and infinity
-            LinAggregated = pd.Series.max((pd.DataFrame.max(Lin)))
-            print(LinAggregated)
-
-            # Similarity measure between 0.0 and infinity
-            LeacockChodorowAggregated = pd.Series.max((pd.DataFrame.max(LeacockChodorow)))
-            print(LeacockChodorowAggregated)
-
-            # Similarity measure between 0.0 and infinity
-            PathAggregated = pd.Series.max((pd.DataFrame.max(Path)))
-            print(PathAggregated)
-
-            # Similarity measure between 0.0 and infinity
-            LeskAggregated = pd.Series.max((pd.DataFrame.max(Lesk)))
-            print(LeskAggregated)
-
-            JenaAggregated = pd.Series.max(pd.DataFrame.max(Jena))
 
             self.df.at[self.row_index, 'id'] = id
-            self.df.at[self.row_index, 'WuPalmer'] = WuPalmerAggregated
-            self.df.at[self.row_index, 'Resnik'] = ResnikAggregated
-            self.df.at[self.row_index, 'JiangConrath'] = JiangConrathAggregated
-            self.df.at[self.row_index, 'Lin'] = LinAggregated
-            self.df.at[self.row_index, 'LeacockChodorow'] = LeacockChodorowAggregated
-            self.df.at[self.row_index, 'Path'] = PathAggregated
-            self.df.at[self.row_index, 'Lesk'] = LeskAggregated
-            self.df.at[self.row_index, 'Jena'] = JenaAggregated
+            for key in WeightedSimilaritySheetsDict.keys():
+                self.df.at[self.row_index, key] = AggregatedMeasures[key]
             self.row_index = self.row_index + 1
 
         print self.df
@@ -194,11 +166,5 @@ class ExcelConverterIDF:
         writer.save()
 
 
-
-    # def run(self):
-    #     converter_ = ExcelConverterTFIDF_()
-    #     ExcelConverterTFIDF_.main(self)
-
-
-#converter= ExcelConverterTFIDF_()
-#converter.main()
+converter= ExcelConverterIDF()
+converter.main()
